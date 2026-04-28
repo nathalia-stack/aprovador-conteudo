@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -78,7 +77,6 @@
 
     .post-item textarea { min-height: 70px; margin-bottom: 8px; font-size: 0.88rem; }
     .post-item input { font-size: 0.88rem; margin-bottom: 8px; }
-    .post-item input:last-of-type { margin-bottom: 0; }
     .post-type-label { font-size: 0.72rem; color: var(--ink-light); margin-top: 6px; }
 
     .field-label-small {
@@ -183,7 +181,10 @@
 
     @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-    .card-image-wrap { position: relative; background: #F0EEE9; min-height: 200px; display: flex; align-items: center; justify-content: center; }
+    .card-image-wrap {
+      position: relative; background: #F0EEE9;
+      display: flex; align-items: center; justify-content: center;
+    }
     .card-image-wrap img { width: 100%; max-height: 520px; object-fit: contain; display: block; }
 
     .card-num-badge {
@@ -193,29 +194,30 @@
       border-radius: 99px; backdrop-filter: blur(4px); z-index: 2;
     }
 
-    .carousel-wrap { position: relative; }
-    .carousel-slides { display: flex; overflow: hidden; }
-    .carousel-slide { min-width: 100%; flex-shrink: 0; }
-    .carousel-nav {
-      position: absolute; top: 50%; transform: translateY(-50%);
-      display: flex; justify-content: space-between; width: 100%; padding: 0 12px; pointer-events: none;
+    .carousel-stack { display: flex; flex-direction: column; }
+    .carousel-stack-header {
+      padding: 12px 16px; background: #f0eee9;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.78rem; font-weight: 600;
+      color: var(--ink-light); letter-spacing: 0.06em; text-transform: uppercase;
     }
-    .carousel-btn {
-      pointer-events: all; width: 36px; height: 36px; border-radius: 50%;
-      background: rgba(255,255,255,0.9); border: none; cursor: pointer;
-      font-size: 1rem; display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15); transition: background 0.2s;
+    .carousel-arte {
+      position: relative; background: #f0eee9;
+      border-bottom: 1px solid var(--border);
     }
-    .carousel-btn:hover { background: #fff; }
-    .carousel-dots { display: flex; justify-content: center; gap: 6px; padding: 10px; background: #F0EEE9; flex-wrap: wrap; }
-    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); cursor: pointer; transition: background 0.2s; }
-    .dot.active { background: var(--ink); }
+    .carousel-arte:last-child { border-bottom: none; }
+    .carousel-arte iframe { display: block; border: none; width: 100%; height: 520px; }
+    .carousel-arte-badge {
+      position: absolute; top: 12px; left: 12px;
+      background: rgba(26,26,24,0.75); color: #fff;
+      font-size: 0.72rem; font-weight: 600; padding: 3px 8px;
+      border-radius: 99px; backdrop-filter: blur(4px); z-index: 2;
+    }
 
     .card-video-wrap { position: relative; background: #0D0D0D; display: flex; align-items: center; justify-content: center; }
-    .card-video-wrap video { width: 100%; max-height: 520px; display: block; }
 
     .card-body { padding: 24px 28px 28px; }
-    .card-legenda { font-size: 0.95rem; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+    .card-legenda { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--ink); margin-bottom: 8px; line-height: 1.3; }
     .card-descricao { font-size: 0.85rem; color: var(--ink-light); line-height: 1.6; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); white-space: pre-wrap; }
 
     .respostas-anteriores { margin-bottom: 20px; }
@@ -295,6 +297,7 @@
       .setup-card, .links-card { padding: 32px 20px; }
       .topbar { padding: 12px 16px; flex-wrap: wrap; }
       .cards-container { padding: 24px 16px; }
+      .carousel-arte iframe { height: 360px; }
     }
   </style>
 </head>
@@ -315,7 +318,7 @@
       <label>Posts para aprovação</label>
       <div class="posts-list" id="posts-list"></div>
       <button class="btn-add-post" onclick="addPost()">+ Adicionar post</button>
-      <p class="hint" style="margin-top:10px;">Para carrossel, cole múltiplos links do Drive — um por linha — dentro do mesmo post.</p>
+      <p class="hint" style="margin-top:10px;">Para carrossel, cole múltiplos links do Drive — um por linha — dentro do mesmo post. As artes aparecerão empilhadas na ordem que você colocar.</p>
     </div>
 
     <button class="btn-primary" id="btn-criar" onclick="criarRodada()">
@@ -425,14 +428,14 @@
         <span class="post-num">Post ${postCount}</span>
         <button class="btn-remove-post" onclick="removePost(${postCount})">✕</button>
       </div>
-      <span class="field-label-small">Links do Drive</span>
+      <span class="field-label-small">Links do Drive (um por linha)</span>
       <textarea id="links-${postCount}" placeholder="Cole os links aqui&#10;Um por linha&#10;Para carrossel: múltiplos links" oninput="detectType(${postCount})" style="margin-bottom:12px;"></textarea>
-      <span class="field-label-small">Título curto (aparece na barra superior)</span>
-      <input type="text" id="legenda-${postCount}" placeholder="Ex: Modo Cinema no iPhone" />
-      <span class="field-label-small" style="margin-top:10px;">Contexto interno (só você vê — aparece na barra superior)</span>
-      <input type="text" id="contexto-${postCount}" placeholder="Ex: Território Criação · Carrossel · Hub Cinema" />
-      <span class="field-label-small" style="margin-top:10px;">Legenda do post (o cliente vê — aparece abaixo da arte)</span>
-      <textarea id="descricao-${postCount}" placeholder="Cole aqui a legenda completa do post" style="min-height:80px;margin-bottom:8px;font-size:0.85rem;"></textarea>
+      <span class="field-label-small">Título curto (aparece na barra superior — só você vê)</span>
+      <input type="text" id="legenda-${postCount}" placeholder="Ex: Modo Cinema no iPhone" style="margin-bottom:10px;" />
+      <span class="field-label-small">Contexto interno (aparece na barra superior — só você vê)</span>
+      <input type="text" id="contexto-${postCount}" placeholder="Ex: Território Criação · Carrossel · Hub Cinema" style="margin-bottom:10px;" />
+      <span class="field-label-small">Legenda do post (o cliente vê — aparece abaixo da arte)</span>
+      <textarea id="descricao-${postCount}" placeholder="Cole aqui a legenda completa do post" style="min-height:80px;margin-bottom:10px;font-size:0.88rem;"></textarea>
       <span class="field-label-small">Link do card no Trello (opcional)</span>
       <input type="text" id="trello-link-${postCount}" placeholder="https://trello.com/c/XXXXX" style="margin-bottom:0;" />
       <p class="post-type-label" id="type-label-${postCount}">📎 Post único</p>
@@ -616,7 +619,6 @@
 
       const aprovacoes = await sbGet(`aprovacoes?post_id=eq.${postId}&select=*&order=criado_em.asc`);
 
-      // Separar contexto interno e descricao
       let descricaoReal = post.descricao || '';
       let contextoReal = '';
       if (descricaoReal.includes('\n__contexto__')) {
@@ -671,7 +673,7 @@
           <div class="aprovacao-form">
             <p class="aprovacao-titulo">Sua avaliação</p>
             <div class="field-group">
-              <input type="text" id="nome-revisor" placeholder="Seu nome (ex: Nicholas)" />
+              <input type="text" id="nome-revisor" placeholder="Seu nome" />
             </div>
             <div class="action-row">
               <button class="btn-action btn-approve" id="btn-approve" onclick="selecionarStatus('aprovado')">✓ Aprovado</button>
@@ -735,32 +737,18 @@
   function isVideoLink(url) { return url.endsWith('#video') || /\.(mp4|mov|webm|ogg)(\?|$)/i.test(url); }
   function cleanUrl(url) { return url.replace(/#video$/, ''); }
 
-  function drivePreviewUrl(id) {
-    return `https://drive.google.com/file/d/${id}/preview`;
-  }
-
-  function renderDriveIframe(driveId, label, height = 520, bg = '#f0eee9') {
-    return `<div class="card-image-wrap" style="min-height:320px;background:${bg};margin-bottom:18px;">
-      <iframe
-        src="${drivePreviewUrl(driveId)}"
-        width="100%"
-        height="${height}"
-        frameborder="0"
-        allowfullscreen
-        style="display:block;background:${bg};border:0;">
-      </iframe>
-      <span class="card-num-badge" style="z-index:2;">${label}</span>
-    </div>`;
-  }
-
   function renderImagem(url) {
     const cleanedUrl = cleanUrl(url || '').trim();
     const driveId = extractDriveId(cleanedUrl);
 
     if (isDriveLink(cleanedUrl) && driveId) {
-      const label = isVideoLink(url) ? 'Vídeo' : 'Post';
-      const bg = isVideoLink(url) ? '#000' : '#f0eee9';
-      return renderDriveIframe(driveId, label, isVideoLink(url) ? 420 : 520, bg);
+      const isVid = isVideoLink(url);
+      return `<div class="card-image-wrap" style="min-height:480px;background:${isVid ? '#000' : '#f0eee9'};">
+        <iframe src="https://drive.google.com/file/d/${driveId}/preview"
+          width="100%" height="480" frameborder="0" allowfullscreen
+          style="display:block;border:none;background:${isVid ? '#000' : '#f0eee9'};"></iframe>
+        <span class="card-num-badge" style="z-index:2;">${isVid ? 'Vídeo' : 'Post'}</span>
+      </div>`;
     }
 
     if (isVideoLink(cleanedUrl)) {
@@ -770,8 +758,8 @@
       </div>`;
     }
 
-    return `<div class="card-image-wrap">
-      <img src="${cleanedUrl}" alt="Post" onerror="this.style.opacity=0"/>
+    return `<div class="card-image-wrap" style="min-height:200px;">
+      <img src="${cleanedUrl}" alt="Post" onerror="this.style.opacity=0" style="width:100%;max-height:520px;object-fit:contain;display:block;"/>
       <span class="card-num-badge">Post</span>
     </div>`;
   }
@@ -782,37 +770,25 @@
       .filter(Boolean)
       .map((url, si) => {
         const driveId = extractDriveId(url);
-        const label = `Arte ${si + 1}/${imagens.length}`;
-
+        const label = `Arte ${si + 1} de ${imagens.length}`;
         if (isDriveLink(url) && driveId) {
-          return renderDriveIframe(driveId, label, 520, '#f0eee9');
+          return `<div class="carousel-arte">
+            <iframe src="https://drive.google.com/file/d/${driveId}/preview"
+              width="100%" height="520" frameborder="0" allowfullscreen
+              style="display:block;border:none;background:#f0eee9;"></iframe>
+            <span class="carousel-arte-badge">${label}</span>
+          </div>`;
         }
-return `<div class="card-image-wrap" style="margin-bottom:18px;flex-direction:column;align-items:stretch;">
-  <img src="${url}" alt="${label}" style="width:100%;max-height:520px;object-fit:contain;display:block;"/>
-  <span class="card-num-badge">${label}</span>
-
-  <div style="margin-top:10px;padding:0 12px 12px;">
-    <textarea 
-      placeholder="Comentário sobre esta arte..."
-      style="width:100%;padding:10px;border-radius:8px;border:1px solid #e0ddd7;font-size:0.85rem;"
-      id="comentario-arte-${si}"
-    ></textarea>
-  </div>
-</div>`;
-
-      })
-      .join('');
+        return `<div class="carousel-arte">
+          <img src="${url}" alt="${label}" style="width:100%;max-height:520px;object-fit:contain;display:block;"/>
+          <span class="carousel-arte-badge">${label}</span>
+        </div>`;
+      }).join('');
 
     return `<div class="carousel-stack">
-      <div style="padding:12px 16px;background:#f0eee9;border-bottom:1px solid var(--border);font-size:0.78rem;font-weight:600;color:var(--ink-light);letter-spacing:0.06em;text-transform:uppercase;">
-        Carrossel com ${imagens.length} artes — visualize uma abaixo da outra
-      </div>
+      <div class="carousel-stack-header">Carrossel · ${imagens.length} artes</div>
       ${slidesHtml}
     </div>`;
-  }
-
-  function goSlide() {
-    // Mantida vazia por compatibilidade com links antigos. O carrossel agora é exibido em pilha, uma arte abaixo da outra.
   }
 
   const postId = new URLSearchParams(window.location.search).get('post');
