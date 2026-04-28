@@ -739,126 +739,73 @@
     return `https://drive.google.com/file/d/${id}/preview`;
   }
 
-  function renderImagem(url) {
-    const driveId = extractDriveId(cleanUrl(url));
+  function renderDriveIframe(driveId, label, height = 520, bg = '#f0eee9') {
+    return `<div class="card-image-wrap" style="min-height:320px;background:${bg};margin-bottom:18px;">
+      <iframe
+        src="${drivePreviewUrl(driveId)}"
+        width="100%"
+        height="${height}"
+        frameborder="0"
+        allowfullscreen
+        style="display:block;background:${bg};border:0;">
+      </iframe>
+      <span class="card-num-badge" style="z-index:2;">${label}</span>
+    </div>`;
+  }
 
-    if (isVideoLink(url) && driveId) {
-      return `<div class="card-video-wrap" style="min-height:300px;">
-        <span class="card-num-badge" style="z-index:2;">Vídeo</span>
-        <iframe 
-          src="${drivePreviewUrl(driveId)}" 
-          width="100%" 
-          height="420" 
-          frameborder="0" 
-          allowfullscreen 
-          style="display:block;background:#000;border:0;">
-        </iframe>
-      </div>`;
+  function renderImagem(url) {
+    const cleanedUrl = cleanUrl(url || '').trim();
+    const driveId = extractDriveId(cleanedUrl);
+
+    if (isDriveLink(cleanedUrl) && driveId) {
+      const label = isVideoLink(url) ? 'Vídeo' : 'Post';
+      const bg = isVideoLink(url) ? '#000' : '#f0eee9';
+      return renderDriveIframe(driveId, label, isVideoLink(url) ? 420 : 520, bg);
     }
 
-    if (isDriveLink(url) && driveId) {
-      return `<div class="card-image-wrap" style="min-height:320px;background:#f0eee9;">
-        <iframe 
-          src="${drivePreviewUrl(driveId)}" 
-          width="100%" 
-          height="520" 
-          frameborder="0" 
-          allowfullscreen 
-          style="display:block;background:#f0eee9;border:0;">
-        </iframe>
-        <span class="card-num-badge" style="z-index:2;">Post</span>
+    if (isVideoLink(cleanedUrl)) {
+      return `<div class="card-video-wrap" style="min-height:300px;">
+        <span class="card-num-badge" style="z-index:2;">Vídeo</span>
+        <video controls src="${cleanedUrl}" style="width:100%;max-height:520px;display:block;"></video>
       </div>`;
     }
 
     return `<div class="card-image-wrap">
-      <img src="${url}" alt="Post" onerror="this.style.opacity=0"/>
+      <img src="${cleanedUrl}" alt="Post" onerror="this.style.opacity=0"/>
       <span class="card-num-badge">Post</span>
     </div>`;
   }
 
   function renderCarrossel(imagens) {
-    currentSlide = 0;
+    const slidesHtml = imagens
+      .map(url => cleanUrl(url || '').trim())
+      .filter(Boolean)
+      .map((url, si) => {
+        const driveId = extractDriveId(url);
+        const label = `Arte ${si + 1}/${imagens.length}`;
 
-    const slides = imagens.map((url, si) => {
-      const driveId = extractDriveId(cleanUrl(url));
+        if (isDriveLink(url) && driveId) {
+          return renderDriveIframe(driveId, label, 520, '#f0eee9');
+        }
 
-      if (isDriveLink(url) && driveId) {
-        return `<div class="carousel-slide" style="background:#f0eee9;min-height:320px;">
-          <iframe 
-            src="${drivePreviewUrl(driveId)}" 
-            width="100%" 
-            height="520" 
-            frameborder="0" 
-            allowfullscreen 
-            style="display:block;background:#f0eee9;border:0;">
-          </iframe>
+        return `<div class="card-image-wrap" style="margin-bottom:18px;">
+          <img src="${url}" alt="${label}" style="width:100%;max-height:520px;object-fit:contain;display:block;"/>
+          <span class="card-num-badge">${label}</span>
         </div>`;
-      }
+      })
+      .join('');
 
- let currentSlide = 0;
-let carouselImages = [];
+    return `<div class="carousel-stack">
+      <div style="padding:12px 16px;background:#f0eee9;border-bottom:1px solid var(--border);font-size:0.78rem;font-weight:600;color:var(--ink-light);letter-spacing:0.06em;text-transform:uppercase;">
+        Carrossel com ${imagens.length} artes — visualize uma abaixo da outra
+      </div>
+      ${slidesHtml}
+    </div>`;
+  }
 
-function renderCarrossel(imagens) {
-  currentSlide = 0;
-  carouselImages = imagens.map(url => cleanUrl(url).trim()).filter(Boolean);
-
-  const firstDriveId = extractDriveId(carouselImages[0]);
-  const firstSrc = firstDriveId
-    ? `https://drive.google.com/file/d/${firstDriveId}/preview`
-    : carouselImages[0];
-
-  const dots = carouselImages.map((_, si) => 
-    `<div class="dot ${si === 0 ? 'active' : ''}" onclick="goSlide(${si})"></div>`
-  ).join('');
-
-  return `<div class="card-image-wrap carousel-wrap" style="min-height:520px;background:#f0eee9;">
-    <span class="card-num-badge" style="z-index:2;">
-      Carrossel · <span id="slide-count">1/${carouselImages.length}</span>
-    </span>
-
-    <iframe 
-      id="carousel-frame"
-      src="${firstSrc}" 
-      width="100%" 
-      height="520" 
-      frameborder="0" 
-      allowfullscreen 
-      style="display:block;background:#f0eee9;border:0;">
-    </iframe>
-
-    <div class="carousel-nav">
-      <button class="carousel-btn" onclick="goSlide('prev')">‹</button>
-      <button class="carousel-btn" onclick="goSlide('next')">›</button>
-    </div>
-
-    <div class="carousel-dots" id="dots-main">${dots}</div>
-  </div>`;
-}
-
-function goSlide(direction) {
-  const frame = document.getElementById('carousel-frame');
-  if (!frame || !carouselImages.length) return;
-
-  const total = carouselImages.length;
-
-  if (direction === 'prev') currentSlide = (currentSlide - 1 + total) % total;
-  else if (direction === 'next') currentSlide = (currentSlide + 1) % total;
-  else currentSlide = direction;
-
-  const url = carouselImages[currentSlide];
-  const driveId = extractDriveId(url);
-
-  frame.src = driveId
-    ? `https://drive.google.com/file/d/${driveId}/preview`
-    : url;
-
-  const countEl = document.getElementById('slide-count');
-  if (countEl) countEl.textContent = `${currentSlide + 1}/${total}`;
-
-  document.querySelectorAll('#dots-main .dot').forEach((d, i) => {
-    d.classList.toggle('active', i === currentSlide);
-  });
-}
+  function goSlide() {
+    // Mantida vazia por compatibilidade com links antigos. O carrossel agora é exibido em pilha, uma arte abaixo da outra.
+  }
 
   const postId = new URLSearchParams(window.location.search).get('post');
   if (postId) carregarPost(postId);
