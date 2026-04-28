@@ -177,6 +177,14 @@
       border-radius: 99px; backdrop-filter: blur(4px); z-index: 2;
     }
 
+    .status-badge {
+      position: absolute; top: 16px; right: 16px;
+      font-size: 0.75rem; font-weight: 600; padding: 4px 12px;
+      border-radius: 99px; z-index: 2;
+    }
+    .status-badge.aprovado { background: var(--approve-bg); color: var(--approve); }
+    .status-badge.ajuste { background: var(--revise-bg); color: var(--revise); }
+
     .carousel-wrap { position: relative; }
     .carousel-slides { display: flex; overflow: hidden; }
     .carousel-slide { min-width: 100%; }
@@ -287,7 +295,7 @@
   <div class="setup-card">
     <p class="brand">Papa PPG</p>
     <h1>Aprovação de<br>Conteúdo</h1>
-    <p class="subtitle">Crie uma rodada de aprovação. Cada post gera um link individual para o Nicholas revisar — válido por 7 dias.</p>
+    <p class="subtitle">Crie uma rodada de aprovação. Cada post gera um link individual para o cliente revisar — válido por 7 dias.</p>
 
     <div class="field-group">
       <label>Nome da rodada</label>
@@ -311,7 +319,7 @@
   <div class="links-card">
     <p class="brand">Papa PPG</p>
     <h2>Links gerados!</h2>
-    <p class="sub">Cada link leva diretamente ao post correspondente e já criou o card no Trello. Compartilhe com o Nicholas.</p>
+    <p class="sub">Cada link leva diretamente ao post correspondente. Compartilhe com o cliente.</p>
     <div id="links-list"></div>
     <button class="btn-copy-all" onclick="copiarTodosLinks()">Copiar todos os links para WhatsApp</button>
   </div>
@@ -323,6 +331,7 @@
       <span class="topbar-brand">Papa PPG</span>
       <span class="topbar-title" id="topbar-title">—</span>
       <span class="topbar-meta" id="topbar-meta">—</span>
+      <span id="topbar-descricao" style="display:none;font-size:0.78rem;color:var(--ink-light);line-height:1.4;max-width:320px;margin-top:2px;"></span>
     </div>
     <div class="progress-wrap">
       <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
@@ -407,7 +416,9 @@
         <button class="btn-remove-post" onclick="removePost(${postCount})">✕</button>
       </div>
       <textarea id="links-${postCount}" placeholder="Cole os links do Drive aqui&#10;Um link por linha&#10;Para carrossel: múltiplos links" oninput="detectType(${postCount})"></textarea>
-      <input type="text" id="legenda-${postCount}" placeholder="Legenda ou descrição (opcional)" />
+      <input type="text" id="legenda-${postCount}" placeholder="Título curto (ex: Modo Cinema)" style="margin-bottom:8px;" />
+      <textarea id="descricao-${postCount}" placeholder="Descrição do post — contexto para o cliente (opcional)" style="min-height:56px;margin-bottom:8px;font-size:0.85rem;"></textarea>
+      <input type="text" id="trello-link-${postCount}" placeholder="Link do card no Trello (opcional — ex: https://trello.com/c/XXXXX)" style="font-size:0.85rem;" />
       <p class="post-type-label" id="type-label-${postCount}">📎 Post único</p>
     `;
     list.appendChild(div);
@@ -441,7 +452,9 @@
       if (!linksRaw) continue;
       const imagens = linksRaw.split('\n').map(l => l.trim()).filter(Boolean);
       const legenda = document.getElementById(`legenda-${id}`)?.value.trim() || '';
-      posts.push({ ordem: posts.length + 1, imagens, legenda });
+      const descricao = document.getElementById(`descricao-${id}`)?.value.trim() || '';
+      const trelloLink = document.getElementById(`trello-link-${id}`)?.value.trim() || '';
+      posts.push({ ordem: posts.length + 1, imagens, legenda, descricao, trelloLink });
     }
 
     if (!posts.length) { showToast('Adicione pelo menos um post com link'); return; }
@@ -453,7 +466,7 @@
     try {
       const rodadaRes = await sbPost('rodadas', { nome });
       const rodada = Array.isArray(rodadaRes) ? rodadaRes[0] : rodadaRes;
-      if (!rodada?.id) throw new Error('Falha ao criar rodada no banco. Verifique se rodou o SQL no Supabase.');
+      if (!rodada?.id) throw new Error('Falha ao criar rodada. Verifique se rodou o SQL no Supabase.');
 
       const linksGerados = [];
       const baseUrl = window.location.origin + window.location.pathname;
@@ -463,7 +476,8 @@
           rodada_id: rodada.id,
           ordem: post.ordem,
           imagens: post.imagens,
-          legenda: post.legenda
+          legenda: post.legenda,
+          descricao: post.descricao
         });
         const postCriado = Array.isArray(postRes) ? postRes[0] : postRes;
         if (!postCriado?.id) continue;
@@ -472,16 +486,27 @@
         const nomeCard = `${nome} — Post ${post.ordem}${post.legenda ? ': ' + post.legenda.substring(0, 40) : ''}`;
 
         try {
-          const trelloCard = await trelloPost('cards', {
-            idList: TRELLO_LISTA_AGUARDANDO,
-            name: nomeCard,
-            desc: `🔗 Link de aprovação: ${linkPost}\n\n${post.legenda ? '📝 ' + post.legenda + '\n\n' : ''}📎 ${post.imagens.length > 1 ? 'Carrossel com ' + post.imagens.length + ' slides' : 'Post único'}`
-          });
-          if (trelloCard?.id) {
-            await sbPatch(`posts?id=eq.${postCriado.id}`, { trello_card_id: trelloCard.id });
+          let trelloCardId = null;
+          if (post.trelloLink) {
+            const m = post.trelloLink.match(/trello\.com\/c\/([a-zA-Z0-9]+)/);
+            if (m) {
+              const cardInfo = await fetch(`https://api.trello.com/1/cards/${m[1]}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`).then(r => r.json());
+              if (cardInfo?.id) trelloCardId = cardInfo.id;
+            }
+          }
+          if (!trelloCardId) {
+            const trelloCard = await trelloPost('cards', {
+              idList: TRELLO_LISTA_AGUARDANDO,
+              name: nomeCard,
+              desc: `🔗 Link de aprovação: ${linkPost}\n\n${post.descricao ? '📝 ' + post.descricao + '\n\n' : ''}📎 ${post.imagens.length > 1 ? 'Carrossel com ' + post.imagens.length + ' slides' : 'Post único'}`
+            });
+            if (trelloCard?.id) trelloCardId = trelloCard.id;
+          }
+          if (trelloCardId) {
+            await sbPatch(`posts?id=eq.${postCriado.id}`, { trello_card_id: trelloCardId });
           }
         } catch (te) {
-          console.warn('Trello error:', te);
+          console.warn('Trello error (não crítico):', te);
         }
 
         linksGerados.push({
@@ -572,8 +597,11 @@
       const aprovacoes = await sbGet(`aprovacoes?post_id=eq.${postId}&select=*&order=criado_em.asc`);
 
       document.getElementById('topbar-title').textContent = rodada.nome;
-      document.getElementById('topbar-meta').textContent = `Post ${post.ordem}${post.legenda ? ' · ' + post.legenda.substring(0, 30) : ''}`;
-      atualizarProgresso(aprovacoes?.length || 0);
+      document.getElementById('topbar-meta').textContent = `Post ${post.ordem}${post.legenda ? ' — ' + post.legenda : ''}`;
+      const descEl = document.getElementById('topbar-descricao');
+      if (descEl) { descEl.textContent = post.descricao || ''; descEl.style.display = post.descricao ? 'block' : 'none'; }
+      atualizarProgresso(aprovacoes.length);
+
       renderizarPost(post, aprovacoes || []);
 
     } catch (e) {
@@ -617,7 +645,7 @@
           <div class="aprovacao-form">
             <p class="aprovacao-titulo">Sua avaliação</p>
             <div class="field-group">
-              <input type="text" id="nome-revisor" placeholder="Seu nome (ex: Nicholas)" />
+              <input type="text" id="nome-revisor" placeholder="Seu nome (ex: Nathália)" />
             </div>
             <div class="action-row">
               <button class="btn-action btn-approve" id="btn-approve" onclick="selecionarStatus('aprovado')">✓ Aprovado</button>
