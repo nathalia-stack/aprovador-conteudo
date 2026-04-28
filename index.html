@@ -787,11 +787,19 @@
         if (isDriveLink(url) && driveId) {
           return renderDriveIframe(driveId, label, 520, '#f0eee9');
         }
+return `<div class="card-image-wrap" style="margin-bottom:18px;flex-direction:column;align-items:stretch;">
+  <img src="${url}" alt="${label}" style="width:100%;max-height:520px;object-fit:contain;display:block;"/>
+  <span class="card-num-badge">${label}</span>
 
-        return `<div class="card-image-wrap" style="margin-bottom:18px;">
-          <img src="${url}" alt="${label}" style="width:100%;max-height:520px;object-fit:contain;display:block;"/>
-          <span class="card-num-badge">${label}</span>
-        </div>`;
+  <div style="margin-top:10px;padding:0 12px 12px;">
+    <textarea 
+      placeholder="Comentário sobre esta arte..."
+      style="width:100%;padding:10px;border-radius:8px;border:1px solid #e0ddd7;font-size:0.85rem;"
+      id="comentario-arte-${si}"
+    ></textarea>
+  </div>
+</div>`;
+
       })
       .join('');
 
