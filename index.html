@@ -31,7 +31,6 @@
       min-height: 100vh;
     }
 
-    /* SETUP SCREEN */
     #setup-screen {
       min-height: 100vh;
       display: flex;
@@ -63,9 +62,7 @@
       line-height: 1.5;
     }
 
-    .field-group {
-      margin-bottom: 24px;
-    }
+    .field-group { margin-bottom: 24px; }
 
     label {
       display: block;
@@ -90,10 +87,7 @@
       outline: none;
     }
 
-    input:focus, textarea:focus {
-      border-color: var(--accent);
-    }
-
+    input:focus, textarea:focus { border-color: var(--accent); }
     textarea { resize: vertical; min-height: 80px; }
 
     .hint {
@@ -119,7 +113,6 @@
     }
     .btn-primary:hover { opacity: 0.85; }
 
-    /* REVIEW SCREEN */
     #review-screen { display: none; }
 
     .topbar {
@@ -177,7 +170,6 @@
     }
     .btn-summary:hover { background: var(--ink); color: #fff; }
 
-    /* CARDS */
     .cards-container {
       max-width: 680px;
       margin: 0 auto;
@@ -246,7 +238,6 @@
     .status-badge.aprovado { background: var(--approve-bg); color: var(--approve); }
     .status-badge.ajuste { background: var(--revise-bg); color: var(--revise); }
 
-    /* Carrossel */
     .carousel-wrap { position: relative; }
     .carousel-slides { display: flex; overflow: hidden; }
     .carousel-slide { min-width: 100%; }
@@ -296,10 +287,7 @@
     }
     .dot.active { background: var(--ink); }
 
-    /* Card body */
-    .card-body {
-      padding: 24px 28px 28px;
-    }
+    .card-body { padding: 24px 28px 28px; }
 
     .card-caption {
       font-size: 0.9rem;
@@ -333,35 +321,38 @@
       gap: 6px;
     }
 
-    .btn-approve {
-      background: var(--approve-bg);
-      border-color: var(--approve);
-      color: var(--approve);
-    }
-    .btn-approve:hover, .btn-approve.active {
-      background: var(--approve);
-      color: #fff;
-    }
-
-    .btn-revise {
-      background: var(--revise-bg);
-      border-color: var(--revise);
-      color: var(--revise);
-    }
-    .btn-revise:hover, .btn-revise.active {
-      background: var(--revise);
-      color: #fff;
-    }
+    .btn-approve { background: var(--approve-bg); border-color: var(--approve); color: var(--approve); }
+    .btn-approve:hover, .btn-approve.active { background: var(--approve); color: #fff; }
+    .btn-revise { background: var(--revise-bg); border-color: var(--revise); color: var(--revise); }
+    .btn-revise:hover, .btn-revise.active { background: var(--revise); color: #fff; }
 
     .comment-wrap { margin-top: 4px; }
-    .comment-wrap textarea {
-      background: var(--bg);
-      font-size: 0.88rem;
-      padding: 12px 14px;
-      min-height: 70px;
+    .comment-wrap textarea { background: var(--bg); font-size: 0.88rem; padding: 12px 14px; min-height: 70px; }
+
+    .card-video-wrap {
+      position: relative;
+      background: #0D0D0D;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-video-wrap video { width: 100%; max-height: 520px; display: block; outline: none; }
+    .video-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 99px;
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
 
-    /* SUMMARY MODAL */
     #summary-modal {
       display: none;
       position: fixed;
@@ -394,10 +385,7 @@
       margin-bottom: 32px;
     }
 
-    .modal-header h2 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.5rem;
-    }
+    .modal-header h2 { font-family: 'DM Serif Display', serif; font-size: 1.5rem; }
 
     .modal-close {
       background: none;
@@ -416,11 +404,7 @@
       margin-bottom: 32px;
     }
 
-    .stat-box {
-      padding: 16px;
-      border-radius: var(--radius);
-      text-align: center;
-    }
+    .stat-box { padding: 16px; border-radius: var(--radius); text-align: center; }
     .stat-box.aprovado { background: var(--approve-bg); }
     .stat-box.ajuste { background: var(--revise-bg); }
     .stat-box.pendente { background: var(--pending-bg); }
@@ -433,17 +417,8 @@
 
     .summary-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
 
-    .summary-item {
-      padding: 14px 16px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-    }
-    .summary-item-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 4px;
-    }
+    .summary-item { padding: 14px 16px; border-radius: var(--radius); border: 1px solid var(--border); }
+    .summary-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
     .summary-item-title { font-size: 0.88rem; font-weight: 600; }
     .summary-item-badge {
       font-size: 0.72rem;
@@ -456,7 +431,6 @@
     .badge-aprovado { background: var(--approve-bg); color: var(--approve); }
     .badge-ajuste { background: var(--revise-bg); color: var(--revise); }
     .badge-pendente { background: var(--pending-bg); color: var(--pending); }
-
     .summary-item-comment { font-size: 0.84rem; color: var(--ink-light); margin-top: 4px; }
 
     .btn-copy {
@@ -474,49 +448,6 @@
     }
     .btn-copy:hover { opacity: 0.85; }
 
-    /* VIDEO */
-    .card-video-wrap {
-      position: relative;
-      background: #0D0D0D;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .card-video-wrap video {
-      width: 100%;
-      max-height: 520px;
-      display: block;
-      outline: none;
-    }
-    .video-badge {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      background: rgba(0,0,0,0.6);
-      color: #fff;
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 99px;
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    /* Loading state */
-    .img-placeholder {
-      width: 100%;
-      height: 300px;
-      background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-    }
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
     @media (max-width: 600px) {
       .topbar { padding: 12px 16px; flex-wrap: wrap; }
       .cards-container { padding: 24px 16px; }
@@ -528,9 +459,9 @@
 </head>
 <body>
 
-<!-- SETUP SCREEN -->
 <div id="setup-screen">
   <div class="setup-card">
+    <p style="font-size:0.72rem;font-weight:600;letter-spacing:0.12em;color:var(--ink-light);text-transform:uppercase;margin-bottom:16px;">Papa PPG</p>
     <h1>Aprovação de<br>Conteúdo</h1>
     <p class="subtitle">Cole abaixo os links públicos das imagens que o Nicholas vai revisar. Uma por linha.</p>
 
@@ -541,369 +472,21 @@
 
     <div class="field-group">
       <label>Links das imagens</label>
-      <textarea id="image-links" placeholder="https://drive.google.com/uc?id=ABC&#10;https://drive.google.com/uc?id=DEF&#10;https://drive.google.com/uc?id=GHI"></textarea>
-      <p class="hint">Cole o link do Drive como ele vem — o visualizador converte automaticamente. Para vídeo, adicione <strong>#video</strong> no final do link. Separe carrosséis com <strong>---</strong>.</p>
+      <textarea id="image-links" placeholder="https://drive.google.com/file/d/ABC/view&#10;---&#10;https://drive.google.com/file/d/DEF/view"></textarea>
+      <p class="hint">Cole o link do Drive como ele vem. Separe posts diferentes com <strong>---</strong> (pode ser na mesma linha ou separado). Para vídeo, adicione <strong>#video</strong> no final do link.</p>
     </div>
 
     <div class="field-group">
       <label>Legendas / contexto (opcional)</label>
-      <textarea id="captions" placeholder="Card 1: Post sobre produtividade com iPhone&#10;Card 2: Reels cover — câmera&#10;---&#10;Carrossel: 5 dicas de setup"></textarea>
-      <p class="hint">Uma legenda por card, na mesma ordem. Use <strong>---</strong> para separar carrosséis.</p>
+      <textarea id="captions" placeholder="Post sobre Modo Cinema&#10;---&#10;Carrossel: 5 dicas de setup"></textarea>
+      <p class="hint">Uma legenda por post, na mesma ordem. Use <strong>---</strong> para separar.</p>
     </div>
 
     <button class="btn-primary" onclick="startReview()">Montar aprovação →</button>
   </div>
 </div>
 
-<!-- REVIEW SCREEN -->
 <div id="review-screen">
   <div class="topbar">
     <div class="topbar-left">
-      <span class="topbar-title" id="topbar-title">—</span>
-      <span class="topbar-meta" id="topbar-meta">—</span>
-    </div>
-    <div class="progress-wrap">
-      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
-      <span class="progress-label" id="progress-label">0 / 0</span>
-    </div>
-    <button class="btn-summary" onclick="openSummary()">Ver resumo</button>
-  </div>
-
-  <div class="cards-container" id="cards-container"></div>
-</div>
-
-<!-- SUMMARY MODAL -->
-<div id="summary-modal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h2>Resumo da aprovação</h2>
-      <button class="modal-close" onclick="closeSummary()">✕</button>
-    </div>
-    <div class="summary-stats" id="summary-stats"></div>
-    <div class="summary-list" id="summary-list"></div>
-    <button class="btn-copy" onclick="copyReport()">Copiar relatório para WhatsApp</button>
-  </div>
-</div>
-
-<script>
-  let items = []; // { type: 'single'|'carousel', images: [], caption: '', status: null, comment: '' }
-
-  function isVideo(url) {
-    return url.match(/\.(mp4|mov|webm|ogg)(\?|$)/i) || url.includes('drive.google.com') && url.includes('video');
-  }
-
-  // Detecta se link do Drive é vídeo tentando renderizar como vídeo quando marcado com #video
-  function driveVideoUrl(id) {
-    return `https://drive.google.com/file/d/${id}/preview`;
-  }
-
-  function extractDriveId(url) {
-    // Aceita /file/d/ID/view, /d/ID, id=ID
-    const m = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) ||
-              url.match(/\/d\/([a-zA-Z0-9_-]+)/) ||
-              url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-    return m ? m[1] : null;
-  }
-
-  function isDriveLink(url) {
-    return url.includes('drive.google.com');
-  }
-
-  // Um link é vídeo se terminar em extensão de vídeo OU tiver #video no final
-  function isVideoLink(url) {
-    return url.endsWith('#video') || url.match(/\.(mp4|mov|webm|ogg)(\?|$)/i);
-  }
-
-  function cleanUrl(url) {
-    return url.replace(/#video$/, '');
-  }
-
-  // Converte qualquer link do Drive para link direto de imagem
-  function driveImageUrl(url) {
-    const id = extractDriveId(url);
-    if (!id) return url;
-    return `https://drive.google.com/uc?export=view&id=${id}`;
-  }
-
-  function parseInput() {
-    const linksRaw = document.getElementById('image-links').value.trim();
-    const captionsRaw = document.getElementById('captions').value.trim();
-
-    const linkGroups = linksRaw.split(/\n---\n|\n---$|^---\n/).map(g => g.trim().split('\n').map(l => l.trim()).filter(Boolean));
-    const captionGroups = captionsRaw ? captionsRaw.split(/\n---\n|\n---$|^---\n/).map(g => g.trim()) : [];
-
-    items = linkGroups.map((group, i) => ({
-      type: group.length > 1 ? 'carousel' : 'single',
-      images: group,
-      caption: captionGroups[i] || '',
-      status: null,
-      comment: ''
-    }));
-  }
-
-  function startReview() {
-    const name = document.getElementById('round-name').value.trim() || 'Revisão de conteúdo';
-    const links = document.getElementById('image-links').value.trim();
-    if (!links) { alert('Cole pelo menos um link de imagem.'); return; }
-
-    parseInput();
-
-    document.getElementById('setup-screen').style.display = 'none';
-    document.getElementById('review-screen').style.display = 'block';
-    document.getElementById('topbar-title').textContent = name;
-    document.getElementById('topbar-meta').textContent = items.length + (items.length === 1 ? ' item para revisar' : ' itens para revisar');
-
-    renderCards();
-    updateProgress();
-  }
-
-  function renderCards() {
-    const container = document.getElementById('cards-container');
-    container.innerHTML = '';
-
-    items.forEach((item, idx) => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.id = 'card-' + idx;
-      card.style.animationDelay = (idx * 0.07) + 's';
-
-      const imageHtml = item.type === 'carousel' ? renderCarousel(item.images, idx) : renderSingle(item.images[0], idx);
-
-      card.innerHTML = `
-        ${imageHtml}
-        <div class="card-body">
-          ${item.caption ? `<div class="card-caption">${item.caption}</div>` : ''}
-          <div class="action-row">
-            <button class="btn-action btn-approve" id="btn-approve-${idx}" onclick="setStatus(${idx}, 'aprovado')">✓ Aprovado</button>
-            <button class="btn-action btn-revise" id="btn-revise-${idx}" onclick="setStatus(${idx}, 'ajuste')">✎ Pedir ajuste</button>
-          </div>
-          <div class="comment-wrap">
-            <textarea placeholder="Comentário (opcional)..." id="comment-${idx}" oninput="saveComment(${idx})"></textarea>
-          </div>
-        </div>
-      `;
-
-      container.appendChild(card);
-    });
-  }
-
-  function renderSingle(url, idx) {
-    if (isVideoLink(url)) {
-      const clean = cleanUrl(url);
-      const driveId = extractDriveId(clean);
-      if (driveId) {
-        return `
-          <div class="card-video-wrap" style="min-height:300px;">
-            <span class="card-num-badge" style="z-index:2;">Card ${idx + 1}</span>
-            <span class="status-badge" id="badge-${idx}" style="z-index:2;"></span>
-            <span class="video-badge" style="top:44px;">▶ Vídeo</span>
-            <iframe src="https://drive.google.com/file/d/${driveId}/preview"
-              width="100%" height="420" frameborder="0" allowfullscreen
-              style="display:block;background:#000;"></iframe>
-          </div>
-        `;
-      }
-      return `
-        <div class="card-video-wrap">
-          <span class="card-num-badge" style="z-index:2;">Card ${idx + 1}</span>
-          <span class="status-badge" id="badge-${idx}" style="z-index:2;"></span>
-          <span class="video-badge" style="top:44px;">▶ Vídeo</span>
-          <video controls preload="metadata" style="width:100%;max-height:420px;display:block;">
-            <source src="${clean}" />
-          </video>
-        </div>
-      `;
-    }
-    // Imagem — Drive usa iframe de preview para evitar bloqueio de CORS
-    if (isDriveLink(url)) {
-      const driveId = extractDriveId(url);
-      if (driveId) {
-        return `
-          <div class="card-image-wrap" style="min-height:320px;background:#f0eee9;">
-            <iframe src="https://drive.google.com/file/d/${driveId}/preview"
-              width="100%" height="480" frameborder="0"
-              style="display:block;border:none;"></iframe>
-            <span class="card-num-badge" style="z-index:2;">Card ${idx + 1}</span>
-            <span class="status-badge" id="badge-${idx}" style="z-index:2;"></span>
-          </div>
-        `;
-      }
-    }
-    return `
-      <div class="card-image-wrap">
-        <img src="${url}" alt="Card ${idx + 1}" onerror="this.style.opacity=0"/>
-        <span class="card-num-badge">Card ${idx + 1}</span>
-        <span class="status-badge" id="badge-${idx}"></span>
-      </div>
-    `;
-  }
-
-  function renderCarousel(images, idx) {
-    const slides = images.map((url, si) => {
-      if (isVideoLink(url)) {
-        const clean = cleanUrl(url);
-        const driveId = extractDriveId(clean);
-        if (driveId) {
-          return `<div class="carousel-slide" style="background:#000;min-height:300px;display:flex;align-items:center;">
-            <iframe src="https://drive.google.com/file/d/${driveId}/preview"
-              width="100%" height="400" frameborder="0" allowfullscreen
-              style="display:block;"></iframe>
-          </div>`;
-        }
-        return `<div class="carousel-slide" style="background:#000;">
-          <video controls preload="metadata" style="width:100%;max-height:420px;display:block;">
-            <source src="${clean}" />
-          </video>
-        </div>`;
-      }
-      if (isDriveLink(url)) {
-        const driveId = extractDriveId(url);
-        if (driveId) {
-          return `<div class="carousel-slide" style="background:#f0eee9;min-height:320px;">
-            <iframe src="https://drive.google.com/file/d/${driveId}/preview"
-              width="100%" height="480" frameborder="0" style="display:block;border:none;"></iframe>
-          </div>`;
-        }
-      }
-      return `<div class="carousel-slide"><img src="${url}" alt="Slide ${si + 1}" style="width:100%;max-height:520px;object-fit:contain;display:block;"/></div>`;
-    }).join('');
-
-    const dots = images.map((_, si) => `<div class="dot ${si === 0 ? 'active' : ''}" onclick="goSlide(${idx}, ${si})"></div>`).join('');
-
-    return `
-      <div class="card-image-wrap carousel-wrap" id="carousel-wrap-${idx}">
-        <span class="card-num-badge">Carrossel ${idx + 1} · <span id="slide-count-${idx}">1/${images.length}</span></span>
-        <span class="status-badge" id="badge-${idx}"></span>
-        <div class="carousel-slides" id="carousel-${idx}">
-          ${slides}
-        </div>
-        <div class="carousel-nav">
-          <button class="carousel-btn" onclick="goSlide(${idx}, 'prev')">‹</button>
-          <button class="carousel-btn" onclick="goSlide(${idx}, 'next')">›</button>
-        </div>
-        <div class="carousel-dots" id="dots-${idx}">${dots}</div>
-      </div>
-    `;
-  }
-
-  const carouselState = {};
-
-  function goSlide(idx, direction) {
-    const item = items[idx];
-    if (!carouselState[idx]) carouselState[idx] = 0;
-    let cur = carouselState[idx];
-    const total = item.images.length;
-
-    if (direction === 'prev') cur = (cur - 1 + total) % total;
-    else if (direction === 'next') cur = (cur + 1) % total;
-    else cur = direction;
-
-    carouselState[idx] = cur;
-    const track = document.getElementById('carousel-' + idx);
-    track.style.transform = `translateX(-${cur * 100}%)`;
-    track.style.transition = 'transform 0.3s ease';
-
-    document.getElementById('slide-count-' + idx).textContent = `${cur + 1}/${total}`;
-    document.querySelectorAll(`#dots-${idx} .dot`).forEach((d, i) => d.classList.toggle('active', i === cur));
-  }
-
-  function setStatus(idx, status) {
-    items[idx].status = status;
-
-    const card = document.getElementById('card-' + idx);
-    card.className = 'card status-' + status;
-
-    const badge = document.getElementById('badge-' + idx);
-    badge.textContent = status === 'aprovado' ? '✓ Aprovado' : '✎ Ajuste';
-    badge.className = 'status-badge ' + status;
-
-    document.getElementById('btn-approve-' + idx).classList.toggle('active', status === 'aprovado');
-    document.getElementById('btn-revise-' + idx).classList.toggle('active', status === 'ajuste');
-
-    updateProgress();
-  }
-
-  function saveComment(idx) {
-    items[idx].comment = document.getElementById('comment-' + idx).value;
-  }
-
-  function updateProgress() {
-    const done = items.filter(i => i.status !== null).length;
-    const total = items.length;
-    const pct = total ? (done / total) * 100 : 0;
-    document.getElementById('progress-fill').style.width = pct + '%';
-    document.getElementById('progress-label').textContent = done + ' / ' + total;
-  }
-
-  function openSummary() {
-    // Sync comments
-    items.forEach((item, idx) => {
-      const el = document.getElementById('comment-' + idx);
-      if (el) item.comment = el.value;
-    });
-
-    const aprovados = items.filter(i => i.status === 'aprovado').length;
-    const ajustes = items.filter(i => i.status === 'ajuste').length;
-    const pendentes = items.filter(i => i.status === null).length;
-
-    document.getElementById('summary-stats').innerHTML = `
-      <div class="stat-box aprovado"><div class="stat-num">${aprovados}</div><div class="stat-label">Aprovados</div></div>
-      <div class="stat-box ajuste"><div class="stat-num">${ajustes}</div><div class="stat-label">Ajustes</div></div>
-      <div class="stat-box pendente"><div class="stat-num">${pendentes}</div><div class="stat-label">Pendentes</div></div>
-    `;
-
-    const list = items.map((item, idx) => {
-      const statusLabel = item.status === 'aprovado' ? 'Aprovado' : item.status === 'ajuste' ? 'Pedir ajuste' : 'Pendente';
-      const badgeClass = item.status === 'aprovado' ? 'badge-aprovado' : item.status === 'ajuste' ? 'badge-ajuste' : 'badge-pendente';
-      const title = item.type === 'carousel' ? `Carrossel ${idx + 1}` : `Card ${idx + 1}`;
-      return `
-        <div class="summary-item">
-          <div class="summary-item-header">
-            <span class="summary-item-title">${title}${item.caption ? ' — ' + item.caption.substring(0, 40) + (item.caption.length > 40 ? '…' : '') : ''}</span>
-            <span class="summary-item-badge ${badgeClass}">${statusLabel}</span>
-          </div>
-          ${item.comment ? `<div class="summary-item-comment">💬 ${item.comment}</div>` : ''}
-        </div>
-      `;
-    }).join('');
-
-    document.getElementById('summary-list').innerHTML = list;
-    document.getElementById('summary-modal').classList.add('open');
-  }
-
-  function closeSummary() {
-    document.getElementById('summary-modal').classList.remove('open');
-  }
-
-  function copyReport() {
-    const name = document.getElementById('topbar-title').textContent;
-    const aprovados = items.filter(i => i.status === 'aprovado').length;
-    const ajustes = items.filter(i => i.status === 'ajuste').length;
-    const pendentes = items.filter(i => i.status === null).length;
-
-    let text = `*Aprovação — ${name}*\n`;
-    text += `✅ ${aprovados} aprovados  ✎ ${ajustes} ajustes  ⏳ ${pendentes} pendentes\n\n`;
-
-    items.forEach((item, idx) => {
-      const title = item.type === 'carousel' ? `Carrossel ${idx + 1}` : `Card ${idx + 1}`;
-      const statusEmoji = item.status === 'aprovado' ? '✅' : item.status === 'ajuste' ? '✎' : '⏳';
-      text += `${statusEmoji} *${title}*`;
-      if (item.caption) text += ` — ${item.caption.substring(0, 50)}`;
-      text += '\n';
-      if (item.comment) text += `   💬 ${item.comment}\n`;
-    });
-
-    navigator.clipboard.writeText(text).then(() => {
-      const btn = document.querySelector('.btn-copy');
-      btn.textContent = 'Copiado!';
-      setTimeout(() => btn.textContent = 'Copiar relatório para WhatsApp', 2000);
-    });
-  }
-
-  // Close modal on backdrop click
-  document.getElementById('summary-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeSummary();
-  });
-</script>
-</body>
-</html>
+      <span style="font-size:0.68rem;font-weight:600;letter-spacing:0.12em;color:va
