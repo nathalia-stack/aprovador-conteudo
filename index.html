@@ -1,3 +1,6 @@
+Aqui está:
+
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -207,7 +210,7 @@
     .card-video-wrap video { width: 100%; max-height: 520px; display: block; }
 
     .card-body { padding: 24px 28px 28px; }
-    .card-caption { font-size: 0.9rem; color: var(--ink-light); line-height: 1.5; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); white-space: pre-wrap; }
+    .card-caption { font-size: 0.9rem; font-weight: 600; color: var(--ink); line-height: 1.5; margin-bottom: 8px; }
 
     .respostas-anteriores { margin-bottom: 20px; }
     .respostas-titulo { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 10px; }
@@ -322,6 +325,7 @@
     <p class="sub">Cada link leva diretamente ao post correspondente. Compartilhe com o cliente.</p>
     <div id="links-list"></div>
     <button class="btn-copy-all" onclick="copiarTodosLinks()">Copiar todos os links para WhatsApp</button>
+    <button onclick="novaRodada()" style="width:100%;padding:14px;margin-top:10px;background:transparent;border:1.5px solid var(--border);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;color:var(--ink-light);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--ink)';this.style.color='var(--ink)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--ink-light)'">+ Criar nova rodada</button>
   </div>
 </div>
 
@@ -564,6 +568,19 @@
     navigator.clipboard.writeText(text.trim()).then(() => showToast('Links copiados!'));
   }
 
+  function novaRodada() {
+    document.getElementById('links-screen').classList.remove('active');
+    document.getElementById('setup-screen').classList.add('active');
+    document.getElementById('round-name').value = '';
+    document.getElementById('posts-list').innerHTML = '';
+    postCount = 0;
+    addPost();
+    window._linksGerados = null;
+    const btn = document.getElementById('btn-criar');
+    btn.disabled = false;
+    btn.innerHTML = 'Criar rodada e gerar links →';
+  }
+
   async function carregarPost(postId) {
     document.getElementById('setup-screen').classList.remove('active');
     document.getElementById('review-screen').classList.add('active');
@@ -641,6 +658,7 @@
         ${imageHtml}
         <div class="card-body">
           ${post.legenda ? `<div class="card-caption">${post.legenda}</div>` : ''}
+          ${post.descricao ? `<div style="font-size:0.85rem;color:var(--ink-light);line-height:1.6;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border);">${post.descricao}</div>` : ''}
           ${respostasHtml}
           <div class="aprovacao-form">
             <p class="aprovacao-titulo">Sua avaliação</p>
@@ -710,6 +728,10 @@
   function isVideoLink(url) { return url.endsWith('#video') || /\.(mp4|mov|webm|ogg)(\?|$)/i.test(url); }
   function cleanUrl(url) { return url.replace(/#video$/, ''); }
 
+  function driveImgUrl(id) {
+    return `https://lh3.googleusercontent.com/d/${id}`;
+  }
+
   function renderImagem(url) {
     if (isVideoLink(url)) {
       const driveId = extractDriveId(cleanUrl(url));
@@ -721,7 +743,9 @@
     if (isDriveLink(url)) {
       const driveId = extractDriveId(url);
       if (driveId) return `<div class="card-image-wrap" style="min-height:320px;background:#f0eee9;">
-        <iframe src="https://drive.google.com/file/d/${driveId}/preview" width="100%" height="480" frameborder="0" style="display:block;border:none;"></iframe>
+        <img src="${driveImgUrl(driveId)}" alt="Post"
+          style="width:100%;max-height:520px;object-fit:contain;display:block;"
+          onerror="this.src='https://drive.google.com/uc?export=view&id=${driveId}'"/>
         <span class="card-num-badge" style="z-index:2;">Post</span>
       </div>`;
     }
@@ -733,10 +757,18 @@
 
   function renderCarrossel(imagens) {
     const slides = imagens.map((url, si) => {
+      if (isVideoLink(url)) {
+        const driveId = extractDriveId(cleanUrl(url));
+        if (driveId) return `<div class="carousel-slide" style="background:#000;min-height:320px;display:flex;align-items:center;">
+          <iframe src="https://drive.google.com/file/d/${driveId}/preview" width="100%" height="420" frameborder="0" allowfullscreen style="display:block;"></iframe>
+        </div>`;
+      }
       if (isDriveLink(url)) {
         const driveId = extractDriveId(url);
-        if (driveId) return `<div class="carousel-slide" style="background:#f0eee9;min-height:320px;">
-          <iframe src="https://drive.google.com/file/d/${driveId}/preview" width="100%" height="480" frameborder="0" style="display:block;border:none;"></iframe>
+        if (driveId) return `<div class="carousel-slide" style="background:#f0eee9;">
+          <img src="${driveImgUrl(driveId)}" alt="Slide ${si+1}"
+            style="width:100%;max-height:520px;object-fit:contain;display:block;"
+            onerror="this.src='https://drive.google.com/uc?export=view&id=${driveId}'"/>
         </div>`;
       }
       return `<div class="carousel-slide"><img src="${url}" alt="Slide ${si+1}" style="width:100%;max-height:520px;object-fit:contain;display:block;"/></div>`;
@@ -775,3 +807,4 @@
 </script>
 </body>
 </html>
+```
