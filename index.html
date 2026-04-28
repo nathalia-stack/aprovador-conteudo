@@ -1,6 +1,3 @@
-Aqui está:
-
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -47,7 +44,6 @@ Aqui está:
     .setup-card .subtitle { color: var(--ink-light); font-size: 0.95rem; margin-bottom: 40px; line-height: 1.5; }
 
     .field-group { margin-bottom: 24px; }
-
     label { display: block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 8px; }
 
     input, textarea {
@@ -80,8 +76,14 @@ Aqui está:
     .btn-remove-post:hover { background: var(--revise-bg); color: var(--revise); }
 
     .post-item textarea { min-height: 70px; margin-bottom: 8px; font-size: 0.88rem; }
-    .post-item input { font-size: 0.88rem; }
+    .post-item input { font-size: 0.88rem; margin-bottom: 8px; }
+    .post-item input:last-of-type { margin-bottom: 0; }
     .post-type-label { font-size: 0.72rem; color: var(--ink-light); margin-top: 6px; }
+
+    .field-label-small {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--ink-light); margin-bottom: 4px; display: block;
+    }
 
     .btn-add-post {
       width: 100%; padding: 12px;
@@ -142,6 +144,15 @@ Aqui está:
     }
     .btn-copy-all:hover { background: var(--ink); color: #fff; }
 
+    .btn-nova-rodada {
+      width: 100%; padding: 14px; margin-top: 10px;
+      background: transparent; border: 1.5px solid var(--border);
+      border-radius: var(--radius); font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; font-weight: 600; color: var(--ink-light);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-nova-rodada:hover { border-color: var(--ink); color: var(--ink); }
+
     .topbar {
       position: sticky; top: 0; z-index: 100;
       background: rgba(245,243,239,0.94); backdrop-filter: blur(12px);
@@ -154,6 +165,7 @@ Aqui está:
     .topbar-brand { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em; color: var(--ink-light); text-transform: uppercase; }
     .topbar-title { font-family: 'DM Serif Display', serif; font-size: 1.05rem; }
     .topbar-meta { font-size: 0.78rem; color: var(--ink-light); }
+    .topbar-contexto { font-size: 0.75rem; color: var(--ink-light); font-style: italic; margin-top: 1px; }
 
     .progress-wrap { display: flex; align-items: center; gap: 12px; flex: 1; max-width: 280px; }
     .progress-bar-bg { flex: 1; height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; }
@@ -180,17 +192,9 @@ Aqui está:
       border-radius: 99px; backdrop-filter: blur(4px); z-index: 2;
     }
 
-    .status-badge {
-      position: absolute; top: 16px; right: 16px;
-      font-size: 0.75rem; font-weight: 600; padding: 4px 12px;
-      border-radius: 99px; z-index: 2;
-    }
-    .status-badge.aprovado { background: var(--approve-bg); color: var(--approve); }
-    .status-badge.ajuste { background: var(--revise-bg); color: var(--revise); }
-
     .carousel-wrap { position: relative; }
     .carousel-slides { display: flex; overflow: hidden; }
-    .carousel-slide { min-width: 100%; }
+    .carousel-slide { min-width: 100%; flex-shrink: 0; }
     .carousel-nav {
       position: absolute; top: 50%; transform: translateY(-50%);
       display: flex; justify-content: space-between; width: 100%; padding: 0 12px; pointer-events: none;
@@ -202,7 +206,7 @@ Aqui está:
       box-shadow: 0 2px 8px rgba(0,0,0,0.15); transition: background 0.2s;
     }
     .carousel-btn:hover { background: #fff; }
-    .carousel-dots { display: flex; justify-content: center; gap: 6px; padding: 10px; background: #F0EEE9; }
+    .carousel-dots { display: flex; justify-content: center; gap: 6px; padding: 10px; background: #F0EEE9; flex-wrap: wrap; }
     .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); cursor: pointer; transition: background 0.2s; }
     .dot.active { background: var(--ink); }
 
@@ -210,7 +214,8 @@ Aqui está:
     .card-video-wrap video { width: 100%; max-height: 520px; display: block; }
 
     .card-body { padding: 24px 28px 28px; }
-    .card-caption { font-size: 0.9rem; font-weight: 600; color: var(--ink); line-height: 1.5; margin-bottom: 8px; }
+    .card-legenda { font-size: 0.95rem; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+    .card-descricao { font-size: 0.85rem; color: var(--ink-light); line-height: 1.6; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); white-space: pre-wrap; }
 
     .respostas-anteriores { margin-bottom: 20px; }
     .respostas-titulo { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 10px; }
@@ -227,7 +232,7 @@ Aqui está:
     .aprovacao-form { border-top: 1px solid var(--border); padding-top: 20px; }
     .aprovacao-titulo { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 14px; }
     .aprovacao-form .field-group { margin-bottom: 12px; }
-    .aprovacao-form input { font-size: 0.88rem; padding: 11px 14px; }
+    .aprovacao-form input { font-size: 0.88rem; padding: 11px 14px; margin-bottom: 0; }
 
     .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
 
@@ -298,7 +303,7 @@ Aqui está:
   <div class="setup-card">
     <p class="brand">Papa PPG</p>
     <h1>Aprovação de<br>Conteúdo</h1>
-    <p class="subtitle">Crie uma rodada de aprovação. Cada post gera um link individual para o cliente revisar — válido por 7 dias.</p>
+    <p class="subtitle">Crie uma rodada de aprovação. Cada post gera um link individual — válido por 7 dias.</p>
 
     <div class="field-group">
       <label>Nome da rodada</label>
@@ -309,7 +314,7 @@ Aqui está:
       <label>Posts para aprovação</label>
       <div class="posts-list" id="posts-list"></div>
       <button class="btn-add-post" onclick="addPost()">+ Adicionar post</button>
-      <p class="hint" style="margin-top:10px;">Para carrossel, cole múltiplos links do Drive — um por linha — dentro do mesmo post. Para posts individuais, um link por post.</p>
+      <p class="hint" style="margin-top:10px;">Para carrossel, cole múltiplos links do Drive — um por linha — dentro do mesmo post.</p>
     </div>
 
     <button class="btn-primary" id="btn-criar" onclick="criarRodada()">
@@ -322,10 +327,10 @@ Aqui está:
   <div class="links-card">
     <p class="brand">Papa PPG</p>
     <h2>Links gerados!</h2>
-    <p class="sub">Cada link leva diretamente ao post correspondente. Compartilhe com o cliente.</p>
+    <p class="sub">Cada link leva diretamente ao post. Compartilhe com o cliente.</p>
     <div id="links-list"></div>
     <button class="btn-copy-all" onclick="copiarTodosLinks()">Copiar todos os links para WhatsApp</button>
-    <button onclick="novaRodada()" style="width:100%;padding:14px;margin-top:10px;background:transparent;border:1.5px solid var(--border);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;color:var(--ink-light);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--ink)';this.style.color='var(--ink)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--ink-light)'">+ Criar nova rodada</button>
+    <button class="btn-nova-rodada" onclick="novaRodada()">+ Criar nova rodada</button>
   </div>
 </div>
 
@@ -335,7 +340,7 @@ Aqui está:
       <span class="topbar-brand">Papa PPG</span>
       <span class="topbar-title" id="topbar-title">—</span>
       <span class="topbar-meta" id="topbar-meta">—</span>
-      <span id="topbar-descricao" style="display:none;font-size:0.78rem;color:var(--ink-light);line-height:1.4;max-width:320px;margin-top:2px;"></span>
+      <span class="topbar-contexto" id="topbar-contexto" style="display:none;"></span>
     </div>
     <div class="progress-wrap">
       <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
@@ -419,10 +424,16 @@ Aqui está:
         <span class="post-num">Post ${postCount}</span>
         <button class="btn-remove-post" onclick="removePost(${postCount})">✕</button>
       </div>
-      <textarea id="links-${postCount}" placeholder="Cole os links do Drive aqui&#10;Um link por linha&#10;Para carrossel: múltiplos links" oninput="detectType(${postCount})"></textarea>
-      <input type="text" id="legenda-${postCount}" placeholder="Título curto (ex: Modo Cinema)" style="margin-bottom:8px;" />
-      <textarea id="descricao-${postCount}" placeholder="Descrição do post — contexto para o cliente (opcional)" style="min-height:56px;margin-bottom:8px;font-size:0.85rem;"></textarea>
-      <input type="text" id="trello-link-${postCount}" placeholder="Link do card no Trello (opcional — ex: https://trello.com/c/XXXXX)" style="font-size:0.85rem;" />
+      <span class="field-label-small">Links do Drive</span>
+      <textarea id="links-${postCount}" placeholder="Cole os links aqui&#10;Um por linha&#10;Para carrossel: múltiplos links" oninput="detectType(${postCount})" style="margin-bottom:12px;"></textarea>
+      <span class="field-label-small">Título curto (aparece na barra superior)</span>
+      <input type="text" id="legenda-${postCount}" placeholder="Ex: Modo Cinema no iPhone" />
+      <span class="field-label-small" style="margin-top:10px;">Contexto interno (só você vê — aparece na barra superior)</span>
+      <input type="text" id="contexto-${postCount}" placeholder="Ex: Território Criação · Carrossel · Hub Cinema" />
+      <span class="field-label-small" style="margin-top:10px;">Legenda do post (o cliente vê — aparece abaixo da arte)</span>
+      <textarea id="descricao-${postCount}" placeholder="Cole aqui a legenda completa do post" style="min-height:80px;margin-bottom:8px;font-size:0.85rem;"></textarea>
+      <span class="field-label-small">Link do card no Trello (opcional)</span>
+      <input type="text" id="trello-link-${postCount}" placeholder="https://trello.com/c/XXXXX" style="margin-bottom:0;" />
       <p class="post-type-label" id="type-label-${postCount}">📎 Post único</p>
     `;
     list.appendChild(div);
@@ -456,9 +467,10 @@ Aqui está:
       if (!linksRaw) continue;
       const imagens = linksRaw.split('\n').map(l => l.trim()).filter(Boolean);
       const legenda = document.getElementById(`legenda-${id}`)?.value.trim() || '';
+      const contexto = document.getElementById(`contexto-${id}`)?.value.trim() || '';
       const descricao = document.getElementById(`descricao-${id}`)?.value.trim() || '';
       const trelloLink = document.getElementById(`trello-link-${id}`)?.value.trim() || '';
-      posts.push({ ordem: posts.length + 1, imagens, legenda, descricao, trelloLink });
+      posts.push({ ordem: posts.length + 1, imagens, legenda, contexto, descricao, trelloLink });
     }
 
     if (!posts.length) { showToast('Adicione pelo menos um post com link'); return; }
@@ -470,7 +482,7 @@ Aqui está:
     try {
       const rodadaRes = await sbPost('rodadas', { nome });
       const rodada = Array.isArray(rodadaRes) ? rodadaRes[0] : rodadaRes;
-      if (!rodada?.id) throw new Error('Falha ao criar rodada. Verifique se rodou o SQL no Supabase.');
+      if (!rodada?.id) throw new Error('Falha ao criar rodada. Verifique o Supabase.');
 
       const linksGerados = [];
       const baseUrl = window.location.origin + window.location.pathname;
@@ -481,7 +493,7 @@ Aqui está:
           ordem: post.ordem,
           imagens: post.imagens,
           legenda: post.legenda,
-          descricao: post.descricao
+          descricao: post.descricao + (post.contexto ? '\n__contexto__' + post.contexto : '')
         });
         const postCriado = Array.isArray(postRes) ? postRes[0] : postRes;
         if (!postCriado?.id) continue;
@@ -510,7 +522,7 @@ Aqui está:
             await sbPatch(`posts?id=eq.${postCriado.id}`, { trello_card_id: trelloCardId });
           }
         } catch (te) {
-          console.warn('Trello error (não crítico):', te);
+          console.warn('Trello error:', te);
         }
 
         linksGerados.push({
@@ -532,10 +544,8 @@ Aqui está:
   function mostrarLinks(nome, links) {
     document.getElementById('setup-screen').classList.remove('active');
     document.getElementById('links-screen').classList.add('active');
-
     const list = document.getElementById('links-list');
     list.innerHTML = '';
-
     links.forEach(link => {
       const div = document.createElement('div');
       div.className = 'link-item';
@@ -548,7 +558,6 @@ Aqui está:
       `;
       list.appendChild(div);
     });
-
     window._linksGerados = { nome, links };
   }
 
@@ -584,12 +593,8 @@ Aqui está:
   async function carregarPost(postId) {
     document.getElementById('setup-screen').classList.remove('active');
     document.getElementById('review-screen').classList.add('active');
-
     document.getElementById('cards-container').innerHTML = `
-      <div class="loading-screen">
-        <div class="loading-spinner"></div>
-        <p>Carregando...</p>
-      </div>
+      <div class="loading-screen"><div class="loading-spinner"></div><p>Carregando...</p></div>
     `;
 
     try {
@@ -603,31 +608,33 @@ Aqui está:
 
       if (new Date(rodada.expira_em) < new Date()) {
         document.getElementById('cards-container').innerHTML = `
-          <div class="expired-screen">
-            <h2>Este link expirou</h2>
-            <p>O período de aprovação de 7 dias encerrou.<br>Entre em contato com a Papa PPG.</p>
-          </div>
+          <div class="expired-screen"><h2>Este link expirou</h2><p>O período de aprovação de 7 dias encerrou.<br>Entre em contato com a Papa PPG.</p></div>
         `;
         return;
       }
 
       const aprovacoes = await sbGet(`aprovacoes?post_id=eq.${postId}&select=*&order=criado_em.asc`);
 
+      // Separar contexto interno e descricao
+      let descricaoReal = post.descricao || '';
+      let contextoReal = '';
+      if (descricaoReal.includes('\n__contexto__')) {
+        const parts = descricaoReal.split('\n__contexto__');
+        descricaoReal = parts[0].trim();
+        contextoReal = parts[1]?.trim() || '';
+      }
+
       document.getElementById('topbar-title').textContent = rodada.nome;
       document.getElementById('topbar-meta').textContent = `Post ${post.ordem}${post.legenda ? ' — ' + post.legenda : ''}`;
-      const descEl = document.getElementById('topbar-descricao');
-      if (descEl) { descEl.textContent = post.descricao || ''; descEl.style.display = post.descricao ? 'block' : 'none'; }
+      const ctxEl = document.getElementById('topbar-contexto');
+      if (ctxEl) { ctxEl.textContent = contextoReal; ctxEl.style.display = contextoReal ? 'block' : 'none'; }
       atualizarProgresso(aprovacoes.length);
-
-      renderizarPost(post, aprovacoes || []);
+      renderizarPost(post, aprovacoes || [], descricaoReal);
 
     } catch (e) {
       console.error(e);
       document.getElementById('cards-container').innerHTML = `
-        <div class="expired-screen">
-          <h2>Algo deu errado</h2>
-          <p>${e.message}</p>
-        </div>
+        <div class="expired-screen"><h2>Algo deu errado</h2><p>${e.message}</p></div>
       `;
     }
   }
@@ -637,7 +644,7 @@ Aqui está:
     document.getElementById('progress-fill').style.width = total > 0 ? '100%' : '10%';
   }
 
-  function renderizarPost(post, aprovacoes) {
+  function renderizarPost(post, aprovacoes, descricaoReal) {
     const isCarrossel = post.imagens.length > 1;
     const imageHtml = isCarrossel ? renderCarrossel(post.imagens) : renderImagem(post.imagens[0]);
 
@@ -657,8 +664,8 @@ Aqui está:
       <div class="card">
         ${imageHtml}
         <div class="card-body">
-          ${post.legenda ? `<div class="card-caption">${post.legenda}</div>` : ''}
-          ${post.descricao ? `<div style="font-size:0.85rem;color:var(--ink-light);line-height:1.6;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border);">${post.descricao}</div>` : ''}
+          ${post.legenda ? `<div class="card-legenda">${post.legenda}</div>` : ''}
+          ${descricaoReal ? `<div class="card-descricao">${descricaoReal}</div>` : ''}
           ${respostasHtml}
           <div class="aprovacao-form">
             <p class="aprovacao-titulo">Sua avaliação</p>
@@ -688,7 +695,6 @@ Aqui está:
   async function enviarAprovacao(postId, trelloCardId) {
     const nome = document.getElementById('nome-revisor').value.trim();
     const comentario = document.getElementById('comentario').value.trim();
-
     if (!nome) { showToast('Digite seu nome antes de enviar'); return; }
     if (!statusSelecionado) { showToast('Selecione Aprovado ou Pedir ajuste'); return; }
 
@@ -729,7 +735,7 @@ Aqui está:
   function cleanUrl(url) { return url.replace(/#video$/, ''); }
 
   function driveImgUrl(id) {
-    return `https://lh3.googleusercontent.com/d/${id}`;
+    return `https://drive.google.com/thumbnail?id=${id}&sz=w1200`;
   }
 
   function renderImagem(url) {
@@ -807,4 +813,3 @@ Aqui está:
 </script>
 </body>
 </html>
-```
