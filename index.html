@@ -46,17 +46,25 @@
     .field-group { margin-bottom: 24px; }
     label { display: block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 8px; }
 
-    input, textarea {
+    input, textarea, select {
       width: 100%; padding: 14px 16px;
       border: 1.5px solid var(--border); border-radius: var(--radius);
       font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
       color: var(--ink); background: var(--bg);
       transition: border-color 0.2s; outline: none;
+      -webkit-appearance: none; appearance: none;
     }
-    input:focus, textarea:focus { border-color: var(--ink); }
+    input:focus, textarea:focus, select:focus { border-color: var(--ink); }
     textarea { resize: vertical; min-height: 80px; }
 
     .hint { font-size: 0.78rem; color: var(--ink-light); margin-top: 6px; line-height: 1.4; }
+
+    .select-wrap { position: relative; }
+    .select-wrap::after {
+      content: '▾'; position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      color: var(--ink-light); pointer-events: none; font-size: 1rem;
+    }
+    .select-wrap select { padding-right: 36px; cursor: pointer; }
 
     .posts-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 16px; }
 
@@ -186,6 +194,7 @@
       display: flex; align-items: center; justify-content: center;
     }
     .card-image-wrap img { width: 100%; max-height: 520px; object-fit: contain; display: block; }
+    .card-image-wrap iframe { display: block; border: none; width: 100%; height: 480px; background: #f0eee9; }
 
     .card-num-badge {
       position: absolute; top: 16px; left: 16px;
@@ -200,36 +209,27 @@
       border-bottom: 1px solid var(--border);
       font-size: 0.78rem; font-weight: 600;
       color: var(--ink-light); letter-spacing: 0.06em; text-transform: uppercase;
-function renderCarrossel(imagens) {
-  const slidesHtml = imagens
-    .map(url => cleanUrl(url || '').trim())
-    .filter(Boolean)
-    .map((url, si) => {
-      const driveId = extractDriveId(url);
-      const label = `Arte ${si + 1} de ${imagens.length}`;
-      const isVid = isVideoLink(url);
-      if (isDriveLink(url) && driveId) {
-        return `<div class="carousel-arte" style="background:${isVid ? '#000' : '#f0eee9'};">
-          <iframe src="https://drive.google.com/file/d/${driveId}/preview"
-            width="100%" height="520" frameborder="0" allowfullscreen
-            class="${isVid ? 'is-video' : ''}"
-            style="display:block;border:none;background:${isVid ? '#000' : '#f0eee9'};"></iframe>
-          <span class="carousel-arte-badge">${label}</span>
-        </div>`;
-      }
-      return `<div class="carousel-arte">
-        <img src="${url}" alt="${label}" style="width:100%;max-height:520px;object-fit:contain;display:block;"/>
-        <span class="carousel-arte-badge">${label}</span>
-      </div>`;
-    }).join('');
-
-  return `<div class="carousel-stack">
-    <div class="carousel-stack-header">Carrossel · ${imagens.length} artes</div>
-    ${slidesHtml}
-  </div>`;
-}
+    }
+    .carousel-arte {
+      position: relative; background: #f0eee9;
+      border-bottom: 1px solid var(--border);
+    }
+    .carousel-arte:last-child { border-bottom: none; }
+    .carousel-arte iframe {
+      display: block; border: none; width: 100%; height: 520px;
+      pointer-events: none;
+    }
+    .carousel-arte iframe.is-video { pointer-events: all; }
+    .carousel-arte img { width: 100%; max-height: 520px; object-fit: contain; display: block; }
+    .carousel-arte-badge {
+      position: absolute; top: 12px; left: 12px;
+      background: rgba(26,26,24,0.75); color: #fff;
+      font-size: 0.72rem; font-weight: 600; padding: 3px 8px;
+      border-radius: 99px; backdrop-filter: blur(4px); z-index: 2;
+    }
 
     .card-video-wrap { position: relative; background: #0D0D0D; display: flex; align-items: center; justify-content: center; }
+    .card-video-wrap iframe { display: block; border: none; width: 100%; height: 420px; }
 
     .card-body { padding: 24px 28px 28px; }
     .card-legenda { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--ink); margin-bottom: 8px; line-height: 1.3; }
@@ -250,7 +250,6 @@ function renderCarrossel(imagens) {
     .aprovacao-form { border-top: 1px solid var(--border); padding-top: 20px; }
     .aprovacao-titulo { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 14px; }
     .aprovacao-form .field-group { margin-bottom: 12px; }
-    .aprovacao-form input { font-size: 0.88rem; padding: 11px 14px; margin-bottom: 0; }
 
     .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
 
@@ -259,18 +258,20 @@ function renderCarrossel(imagens) {
       font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600;
       cursor: pointer; transition: all 0.2s;
       display: flex; align-items: center; justify-content: center; gap: 6px;
+      background: var(--surface);
     }
     .btn-approve { background: var(--approve-bg); border-color: var(--approve); color: var(--approve); }
     .btn-approve:hover, .btn-approve.active { background: var(--approve); color: #fff; }
     .btn-revise { background: var(--revise-bg); border-color: var(--revise); color: var(--revise); }
     .btn-revise:hover, .btn-revise.active { background: var(--revise); color: #fff; }
 
-    .comment-wrap textarea { background: var(--bg); font-size: 0.88rem; padding: 12px 14px; min-height: 70px; margin-bottom: 10px; }
+    .comment-wrap { margin-bottom: 10px; }
+    .comment-wrap textarea { background: var(--bg); font-size: 0.88rem; padding: 12px 14px; min-height: 70px; }
 
     .btn-submit {
-      width: 100%; padding: 13px; background: var(--ink); color: #fff; border: none;
+      width: 100%; padding: 14px; background: var(--ink); color: #fff; border: none;
       border-radius: var(--radius); font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
       display: flex; align-items: center; justify-content: center; gap: 8px;
     }
     .btn-submit:hover { opacity: 0.85; }
@@ -313,6 +314,7 @@ function renderCarrossel(imagens) {
       .topbar { padding: 12px 16px; flex-wrap: wrap; }
       .cards-container { padding: 24px 16px; }
       .carousel-arte iframe { height: 360px; }
+      .card-image-wrap iframe { height: 360px; }
     }
   </style>
 </head>
@@ -330,10 +332,16 @@ function renderCarrossel(imagens) {
     </div>
 
     <div class="field-group">
+      <label>Aprovadores</label>
+      <input type="text" id="aprovadores" placeholder="Ex: Nicholas, Mabi, Nath" />
+      <p class="hint">Separe os nomes por vírgula. Eles vão aparecer num menu para o cliente selecionar quem está aprovando.</p>
+    </div>
+
+    <div class="field-group">
       <label>Posts para aprovação</label>
       <div class="posts-list" id="posts-list"></div>
       <button class="btn-add-post" onclick="addPost()">+ Adicionar post</button>
-      <p class="hint" style="margin-top:10px;">Para carrossel, cole múltiplos links do Drive — um por linha — dentro do mesmo post. As artes aparecerão empilhadas na ordem que você colocar.</p>
+      <p class="hint" style="margin-top:10px;">Para carrossel, cole múltiplos links do Drive — um por linha. As artes aparecem empilhadas na ordem que você colocar.</p>
     </div>
 
     <button class="btn-primary" id="btn-criar" onclick="criarRodada()">
@@ -476,6 +484,9 @@ function renderCarrossel(imagens) {
     const nome = document.getElementById('round-name').value.trim();
     if (!nome) { showToast('Dê um nome para a rodada'); return; }
 
+    const aprovadoresRaw = document.getElementById('aprovadores').value.trim();
+    const aprovadores = aprovadoresRaw ? aprovadoresRaw.split(',').map(a => a.trim()).filter(Boolean) : [];
+
     const items = document.querySelectorAll('.post-item');
     const posts = [];
 
@@ -506,6 +517,9 @@ function renderCarrossel(imagens) {
       const linksGerados = [];
       const baseUrl = window.location.origin + window.location.pathname;
 
+      // Codifica aprovadores na URL
+      const aprovadoresParam = aprovadores.length ? '&ap=' + encodeURIComponent(aprovadores.join(',')) : '';
+
       for (const post of posts) {
         const postRes = await sbPost('posts', {
           rodada_id: rodada.id,
@@ -517,7 +531,7 @@ function renderCarrossel(imagens) {
         const postCriado = Array.isArray(postRes) ? postRes[0] : postRes;
         if (!postCriado?.id) continue;
 
-        const linkPost = `${baseUrl}?post=${postCriado.id}`;
+        const linkPost = `${baseUrl}?post=${postCriado.id}${aprovadoresParam}`;
         const nomeCard = `${nome} — Post ${post.ordem}${post.legenda ? ': ' + post.legenda.substring(0, 40) : ''}`;
 
         try {
@@ -600,6 +614,7 @@ function renderCarrossel(imagens) {
     document.getElementById('links-screen').classList.remove('active');
     document.getElementById('setup-screen').classList.add('active');
     document.getElementById('round-name').value = '';
+    document.getElementById('aprovadores').value = '';
     document.getElementById('posts-list').innerHTML = '';
     postCount = 0;
     addPost();
@@ -615,6 +630,11 @@ function renderCarrossel(imagens) {
     document.getElementById('cards-container').innerHTML = `
       <div class="loading-screen"><div class="loading-spinner"></div><p>Carregando...</p></div>
     `;
+
+    // Pegar aprovadores da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const aprovadoresParam = urlParams.get('ap');
+    const aprovadores = aprovadoresParam ? decodeURIComponent(aprovadoresParam).split(',').map(a => a.trim()).filter(Boolean) : [];
 
     try {
       const posts = await sbGet(`posts?id=eq.${postId}&select=*`);
@@ -647,7 +667,7 @@ function renderCarrossel(imagens) {
       const ctxEl = document.getElementById('topbar-contexto');
       if (ctxEl) { ctxEl.textContent = contextoReal; ctxEl.style.display = contextoReal ? 'block' : 'none'; }
       atualizarProgresso(aprovacoes.length);
-      renderizarPost(post, aprovacoes || [], descricaoReal);
+      renderizarPost(post, aprovacoes || [], descricaoReal, aprovadores);
 
     } catch (e) {
       console.error(e);
@@ -662,7 +682,7 @@ function renderCarrossel(imagens) {
     document.getElementById('progress-fill').style.width = total > 0 ? '100%' : '10%';
   }
 
-  function renderizarPost(post, aprovacoes, descricaoReal) {
+  function renderizarPost(post, aprovacoes, descricaoReal, aprovadores) {
     const isCarrossel = post.imagens.length > 1;
     const imageHtml = isCarrossel ? renderCarrossel(post.imagens) : renderImagem(post.imagens[0]);
 
@@ -678,6 +698,26 @@ function renderCarrossel(imagens) {
       </div>
     ` : '';
 
+    // Campo de seleção de nome
+    let nomeFieldHtml = '';
+    if (aprovadores.length > 0) {
+      const options = aprovadores.map(a => `<option value="${a}">${a}</option>`).join('');
+      nomeFieldHtml = `
+        <div class="field-group">
+          <div class="select-wrap">
+            <select id="nome-revisor">
+              <option value="">Selecione seu nome...</option>
+              ${options}
+            </select>
+          </div>
+        </div>`;
+    } else {
+      nomeFieldHtml = `
+        <div class="field-group">
+          <input type="text" id="nome-revisor" placeholder="Seu nome" />
+        </div>`;
+    }
+
     document.getElementById('cards-container').innerHTML = `
       <div class="card">
         ${imageHtml}
@@ -687,9 +727,7 @@ function renderCarrossel(imagens) {
           ${respostasHtml}
           <div class="aprovacao-form">
             <p class="aprovacao-titulo">Sua avaliação</p>
-            <div class="field-group">
-              <input type="text" id="nome-revisor" placeholder="Seu nome" />
-            </div>
+            ${nomeFieldHtml}
             <div class="action-row">
               <button class="btn-action btn-approve" id="btn-approve" onclick="selecionarStatus('aprovado')">✓ Aprovado</button>
               <button class="btn-action btn-revise" id="btn-revise" onclick="selecionarStatus('ajuste')">✎ Pedir ajuste</button>
@@ -711,9 +749,10 @@ function renderCarrossel(imagens) {
   }
 
   async function enviarAprovacao(postId, trelloCardId) {
-    const nome = document.getElementById('nome-revisor').value.trim();
+    const nomeEl = document.getElementById('nome-revisor');
+    const nome = nomeEl?.value?.trim();
     const comentario = document.getElementById('comentario').value.trim();
-    if (!nome) { showToast('Digite seu nome antes de enviar'); return; }
+    if (!nome) { showToast('Selecione ou digite seu nome antes de enviar'); return; }
     if (!statusSelecionado) { showToast('Selecione Aprovado ou Pedir ajuste'); return; }
 
     const btn = document.getElementById('btn-submit');
@@ -755,18 +794,18 @@ function renderCarrossel(imagens) {
   function renderImagem(url) {
     const cleanedUrl = cleanUrl(url || '').trim();
     const driveId = extractDriveId(cleanedUrl);
+    const isVid = isVideoLink(url);
 
     if (isDriveLink(cleanedUrl) && driveId) {
-      const isVid = isVideoLink(url);
       return `<div class="card-image-wrap" style="min-height:480px;background:${isVid ? '#000' : '#f0eee9'};">
         <iframe src="https://drive.google.com/file/d/${driveId}/preview"
           width="100%" height="480" frameborder="0" allowfullscreen
-          style="display:block;border:none;background:${isVid ? '#000' : '#f0eee9'};"></iframe>
+          style="display:block;border:none;background:${isVid ? '#000' : '#f0eee9'};${isVid ? '' : 'pointer-events:none;'}"></iframe>
         <span class="card-num-badge" style="z-index:2;">${isVid ? 'Vídeo' : 'Post'}</span>
       </div>`;
     }
 
-    if (isVideoLink(cleanedUrl)) {
+    if (isVid) {
       return `<div class="card-video-wrap" style="min-height:300px;">
         <span class="card-num-badge" style="z-index:2;">Vídeo</span>
         <video controls src="${cleanedUrl}" style="width:100%;max-height:520px;display:block;"></video>
@@ -781,21 +820,26 @@ function renderCarrossel(imagens) {
 
   function renderCarrossel(imagens) {
     const slidesHtml = imagens
-      .map(url => cleanUrl(url || '').trim())
+      .map(url => url || '')
       .filter(Boolean)
       .map((url, si) => {
-        const driveId = extractDriveId(url);
+        const cleanedUrl = cleanUrl(url).trim();
+        const driveId = extractDriveId(cleanedUrl);
+        const isVid = isVideoLink(url);
         const label = `Arte ${si + 1} de ${imagens.length}`;
-        if (isDriveLink(url) && driveId) {
-          return `<div class="carousel-arte">
+
+        if (isDriveLink(cleanedUrl) && driveId) {
+          return `<div class="carousel-arte" style="background:${isVid ? '#000' : '#f0eee9'};">
             <iframe src="https://drive.google.com/file/d/${driveId}/preview"
               width="100%" height="520" frameborder="0" allowfullscreen
-              style="display:block;border:none;background:#f0eee9;"></iframe>
+              class="${isVid ? 'is-video' : ''}"
+              style="display:block;border:none;background:${isVid ? '#000' : '#f0eee9'};"></iframe>
             <span class="carousel-arte-badge">${label}</span>
           </div>`;
         }
+
         return `<div class="carousel-arte">
-          <img src="${url}" alt="${label}" style="width:100%;max-height:520px;object-fit:contain;display:block;"/>
+          <img src="${cleanedUrl}" alt="${label}" style="width:100%;max-height:520px;object-fit:contain;display:block;"/>
           <span class="carousel-arte-badge">${label}</span>
         </div>`;
       }).join('');
@@ -806,7 +850,8 @@ function renderCarrossel(imagens) {
     </div>`;
   }
 
-  const postId = new URLSearchParams(window.location.search).get('post');
+  const urlParams = new URLSearchParams(window.location.search);
+  const postId = urlParams.get('post');
   if (postId) carregarPost(postId);
 </script>
 </body>
