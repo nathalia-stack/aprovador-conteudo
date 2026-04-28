@@ -1,52 +1,25 @@
-function drivePreviewUrl(id) {
-  return `https://drive.google.com/file/d/${id}/preview`;
-}
 
-function renderImagem(url) {
-  const driveId = extractDriveId(cleanUrl(url));
-
-  if (isDriveLink(url) && driveId) {
-    return `<div class="card-image-wrap" style="min-height:320px;background:#f0eee9;">
-      <iframe 
-        src="${drivePreviewUrl(driveId)}" 
-        width="100%" 
-        height="520" 
-        frameborder="0" 
-        allowfullscreen 
-        style="display:block;background:#f0eee9;border:0;">
-      </iframe>
-      <span class="card-num-badge" style="z-index:2;">Post</span>
-    </div>`;
+<script>
+  function extractDriveId(url) {
+    const m = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) ||
+              url.match(/\/d\/([a-zA-Z0-9_-]+)/) ||
+              url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    return m ? m[1] : null;
   }
 
-  if (isVideoLink(url) && driveId) {
-    return `<div class="card-video-wrap" style="min-height:300px;">
-      <span class="card-num-badge" style="z-index:2;">Vídeo</span>
-      <iframe 
-        src="${drivePreviewUrl(driveId)}" 
-        width="100%" 
-        height="420" 
-        frameborder="0" 
-        allowfullscreen 
-        style="display:block;background:#000;border:0;">
-      </iframe>
-    </div>`;
+  function isDriveLink(url) { return url.includes('drive.google.com'); }
+  function isVideoLink(url) { return url.endsWith('#video') || /\.(mp4|mov|webm|ogg)(\?|$)/i.test(url); }
+  function cleanUrl(url) { return url.replace(/#video$/, ''); }
+
+  function drivePreviewUrl(id) {
+    return `https://drive.google.com/file/d/${id}/preview`;
   }
 
-  return `<div class="card-image-wrap">
-    <img src="${url}" alt="Post" onerror="this.style.opacity=0"/>
-    <span class="card-num-badge">Post</span>
-  </div>`;
-}
-
-function renderCarrossel(imagens) {
-  currentSlide = 0;
-
-  const slides = imagens.map((url, si) => {
+  function renderImagem(url) {
     const driveId = extractDriveId(cleanUrl(url));
 
     if (isDriveLink(url) && driveId) {
-      return `<div class="carousel-slide" style="background:#f0eee9;min-height:320px;">
+      return `<div class="card-image-wrap" style="min-height:320px;background:#f0eee9;">
         <iframe 
           src="${drivePreviewUrl(driveId)}" 
           width="100%" 
@@ -55,25 +28,89 @@ function renderCarrossel(imagens) {
           allowfullscreen 
           style="display:block;background:#f0eee9;border:0;">
         </iframe>
+        <span class="card-num-badge" style="z-index:2;">Post</span>
       </div>`;
     }
 
-    return `<div class="carousel-slide">
-      <img src="${url}" alt="Slide ${si + 1}" style="width:100%;max-height:520px;object-fit:contain;display:block;"/>
+    if (isVideoLink(url) && driveId) {
+      return `<div class="card-video-wrap" style="min-height:300px;">
+        <span class="card-num-badge" style="z-index:2;">Vídeo</span>
+        <iframe 
+          src="${drivePreviewUrl(driveId)}" 
+          width="100%" 
+          height="420" 
+          frameborder="0" 
+          allowfullscreen 
+          style="display:block;background:#000;border:0;">
+        </iframe>
+      </div>`;
+    }
+
+    return `<div class="card-image-wrap">
+      <img src="${url}" alt="Post" onerror="this.style.opacity=0"/>
+      <span class="card-num-badge">Post</span>
     </div>`;
-  }).join('');
+  }
 
-  const dots = imagens.map((_, si) => 
-    `<div class="dot ${si === 0 ? 'active' : ''}" onclick="goSlide(${si})"></div>`
-  ).join('');
+  let currentSlide = 0;
 
-  return `<div class="card-image-wrap carousel-wrap">
-    <span class="card-num-badge" style="z-index:2;">Carrossel · <span id="slide-count">1/${imagens.length}</span></span>
-    <div class="carousel-slides" id="carousel-main">${slides}</div>
-    <div class="carousel-nav">
-      <button class="carousel-btn" onclick="goSlide('prev')">‹</button>
-      <button class="carousel-btn" onclick="goSlide('next')">›</button>
-    </div>
-    <div class="carousel-dots" id="dots-main">${dots}</div>
-  </div>`;
-}
+  function renderCarrossel(imagens) {
+    currentSlide = 0;
+
+    const slides = imagens.map((url, si) => {
+      const driveId = extractDriveId(cleanUrl(url));
+
+      if (isDriveLink(url) && driveId) {
+        return `<div class="carousel-slide" style="background:#f0eee9;min-height:320px;">
+          <iframe 
+            src="${drivePreviewUrl(driveId)}" 
+            width="100%" 
+            height="520" 
+            frameborder="0" 
+            allowfullscreen 
+            style="display:block;background:#f0eee9;border:0;">
+          </iframe>
+        </div>`;
+      }
+
+      return `<div class="carousel-slide">
+        <img src="${url}" alt="Slide ${si + 1}" style="width:100%;max-height:520px;object-fit:contain;display:block;"/>
+      </div>`;
+    }).join('');
+
+    const dots = imagens.map((_, si) => 
+      `<div class="dot ${si === 0 ? 'active' : ''}" onclick="goSlide(${si})"></div>`
+    ).join('');
+
+    return `<div class="card-image-wrap carousel-wrap">
+      <span class="card-num-badge">Carrossel · <span id="slide-count">1/${imagens.length}</span></span>
+      <div class="carousel-slides" id="carousel-main">${slides}</div>
+      <div class="carousel-nav">
+        <button class="carousel-btn" onclick="goSlide('prev')">‹</button>
+        <button class="carousel-btn" onclick="goSlide('next')">›</button>
+      </div>
+      <div class="carousel-dots" id="dots-main">${dots}</div>
+    </div>`;
+  }
+
+  function goSlide(direction) {
+    const track = document.getElementById('carousel-main');
+    if (!track) return;
+
+    const total = track.querySelectorAll('.carousel-slide').length;
+
+    if (direction === 'prev') currentSlide = (currentSlide - 1 + total) % total;
+    else if (direction === 'next') currentSlide = (currentSlide + 1) % total;
+    else currentSlide = direction;
+
+    track.style.transform = `translateX(-${currentSlide * 100}%)`;
+    track.style.transition = 'transform 0.3s ease';
+
+    const countEl = document.getElementById('slide-count');
+    if (countEl) countEl.textContent = `${currentSlide + 1}/${total}`;
+
+    document.querySelectorAll('#dots-main .dot').forEach((d, i) => {
+      d.classList.toggle('active', i === currentSlide);
+    });
+  }
+</script>
