@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aprovação de Conteúdo</title>
+  <title>Aprovação de Conteúdo — Papa PPG</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -13,7 +13,6 @@
       --surface: #FFFFFF;
       --ink: #1A1A18;
       --ink-light: #6B6B65;
-      --accent: #1A1A18;
       --approve: #2D6A4F;
       --approve-bg: #D8F3DC;
       --revise: #9B2226;
@@ -24,446 +23,271 @@
       --radius: 12px;
     }
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      min-height: 100vh;
-    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
 
-    #setup-screen {
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    #setup-screen.active {
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
+      display: flex; align-items: center; justify-content: center; padding: 40px 20px;
     }
 
     .setup-card {
-      background: var(--surface);
-      border-radius: 20px;
-      padding: 56px 48px;
-      max-width: 560px;
-      width: 100%;
+      background: var(--surface); border-radius: 20px;
+      padding: 56px 48px; max-width: 600px; width: 100%;
       box-shadow: 0 4px 40px rgba(0,0,0,0.06);
     }
 
-    .setup-card h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 2rem;
-      line-height: 1.15;
-      margin-bottom: 8px;
-    }
-
-    .setup-card .subtitle {
-      color: var(--ink-light);
-      font-size: 0.95rem;
-      margin-bottom: 40px;
-      line-height: 1.5;
-    }
+    .brand { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; color: var(--ink-light); text-transform: uppercase; margin-bottom: 16px; }
+    .setup-card h1 { font-family: 'DM Serif Display', serif; font-size: 2rem; line-height: 1.15; margin-bottom: 8px; }
+    .setup-card .subtitle { color: var(--ink-light); font-size: 0.95rem; margin-bottom: 40px; line-height: 1.5; }
 
     .field-group { margin-bottom: 24px; }
 
-    label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--ink-light);
-      margin-bottom: 8px;
-    }
+    label { display: block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 8px; }
 
     input, textarea {
-      width: 100%;
-      padding: 14px 16px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.95rem;
-      color: var(--ink);
-      background: var(--bg);
-      transition: border-color 0.2s;
-      outline: none;
+      width: 100%; padding: 14px 16px;
+      border: 1.5px solid var(--border); border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+      color: var(--ink); background: var(--bg);
+      transition: border-color 0.2s; outline: none;
     }
-
-    input:focus, textarea:focus { border-color: var(--accent); }
+    input:focus, textarea:focus { border-color: var(--ink); }
     textarea { resize: vertical; min-height: 80px; }
 
-    .hint {
-      font-size: 0.78rem;
-      color: var(--ink-light);
-      margin-top: 6px;
-      line-height: 1.4;
+    .hint { font-size: 0.78rem; color: var(--ink-light); margin-top: 6px; line-height: 1.4; }
+
+    .posts-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 16px; }
+
+    .post-item {
+      border: 1.5px solid var(--border); border-radius: var(--radius);
+      padding: 16px; background: var(--bg); position: relative;
     }
+
+    .post-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .post-num { font-size: 0.78rem; font-weight: 600; color: var(--ink-light); text-transform: uppercase; letter-spacing: 0.08em; }
+
+    .btn-remove-post {
+      background: none; border: none; cursor: pointer;
+      color: var(--ink-light); font-size: 1.1rem; padding: 2px 6px;
+      border-radius: 6px; transition: all 0.2s;
+    }
+    .btn-remove-post:hover { background: var(--revise-bg); color: var(--revise); }
+
+    .post-item textarea { min-height: 70px; margin-bottom: 8px; font-size: 0.88rem; }
+    .post-item input { font-size: 0.88rem; }
+    .post-type-label { font-size: 0.72rem; color: var(--ink-light); margin-top: 6px; }
+
+    .btn-add-post {
+      width: 100%; padding: 12px;
+      background: transparent; border: 1.5px dashed var(--border);
+      border-radius: var(--radius); font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem; font-weight: 600; color: var(--ink-light);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-add-post:hover { border-color: var(--ink); color: var(--ink); }
 
     .btn-primary {
-      width: 100%;
-      padding: 16px;
-      background: var(--ink);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.2s;
-      margin-top: 8px;
+      width: 100%; padding: 16px;
+      background: var(--ink); color: #fff; border: none;
+      border-radius: var(--radius); font-family: 'DM Sans', sans-serif;
+      font-size: 1rem; font-weight: 600; cursor: pointer;
+      transition: opacity 0.2s; margin-top: 24px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
     .btn-primary:hover { opacity: 0.85; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    #review-screen { display: none; }
+    #links-screen.active {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center; padding: 40px 20px;
+    }
+
+    .links-card {
+      background: var(--surface); border-radius: 20px;
+      padding: 48px; max-width: 620px; width: 100%;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.06);
+    }
+
+    .links-card h2 { font-family: 'DM Serif Display', serif; font-size: 1.6rem; margin-bottom: 8px; }
+    .links-card .sub { color: var(--ink-light); font-size: 0.9rem; margin-bottom: 32px; line-height: 1.5; }
+
+    .link-item {
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 16px 18px; margin-bottom: 12px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+
+    .link-info { flex: 1; min-width: 0; }
+    .link-title { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+    .link-url { font-size: 0.78rem; color: var(--ink-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .btn-copy-link {
+      padding: 8px 14px; background: var(--ink); color: #fff;
+      border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s; white-space: nowrap;
+    }
+    .btn-copy-link:hover { opacity: 0.8; }
+
+    .btn-copy-all {
+      width: 100%; padding: 14px; margin-top: 8px;
+      background: transparent; border: 1.5px solid var(--ink);
+      border-radius: var(--radius); font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-copy-all:hover { background: var(--ink); color: #fff; }
 
     .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(245, 243, 239, 0.92);
-      backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(245,243,239,0.94); backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
-      padding: 16px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
+      padding: 14px 32px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
     }
 
     .topbar-left { display: flex; flex-direction: column; gap: 2px; }
-    .topbar-title { font-family: 'DM Serif Display', serif; font-size: 1.1rem; }
-    .topbar-meta { font-size: 0.8rem; color: var(--ink-light); }
+    .topbar-brand { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em; color: var(--ink-light); text-transform: uppercase; }
+    .topbar-title { font-family: 'DM Serif Display', serif; font-size: 1.05rem; }
+    .topbar-meta { font-size: 0.78rem; color: var(--ink-light); }
 
-    .progress-wrap {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex: 1;
-      max-width: 320px;
-    }
+    .progress-wrap { display: flex; align-items: center; gap: 12px; flex: 1; max-width: 280px; }
+    .progress-bar-bg { flex: 1; height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: var(--ink); border-radius: 99px; transition: width 0.4s ease; }
+    .progress-label { font-size: 0.78rem; color: var(--ink-light); white-space: nowrap; }
 
-    .progress-bar-bg {
-      flex: 1;
-      height: 4px;
-      background: var(--border);
-      border-radius: 99px;
-      overflow: hidden;
-    }
-    .progress-bar-fill {
-      height: 100%;
-      background: var(--ink);
-      border-radius: 99px;
-      transition: width 0.4s ease;
-    }
-    .progress-label { font-size: 0.8rem; color: var(--ink-light); white-space: nowrap; }
-
-    .btn-summary {
-      padding: 10px 20px;
-      background: transparent;
-      border: 1.5px solid var(--ink);
-      border-radius: var(--radius);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-    .btn-summary:hover { background: var(--ink); color: #fff; }
-
-    .cards-container {
-      max-width: 680px;
-      margin: 0 auto;
-      padding: 48px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-    }
+    .cards-container { max-width: 680px; margin: 0 auto; padding: 48px 24px; display: flex; flex-direction: column; gap: 40px; }
 
     .card {
-      background: var(--surface);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.05);
-      border: 1.5px solid var(--border);
-      transition: box-shadow 0.3s;
+      background: var(--surface); border-radius: 20px; overflow: hidden;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.05); border: 1.5px solid var(--border);
       animation: fadeUp 0.4s ease both;
     }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-    .card.status-aprovado { border-color: var(--approve); }
-    .card.status-ajuste { border-color: var(--revise); }
-
-    .card-image-wrap {
-      position: relative;
-      background: #F0EEE9;
-      min-height: 200px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .card-image-wrap img {
-      width: 100%;
-      max-height: 520px;
-      object-fit: contain;
-      display: block;
-    }
+    .card-image-wrap { position: relative; background: #F0EEE9; min-height: 200px; display: flex; align-items: center; justify-content: center; }
+    .card-image-wrap img { width: 100%; max-height: 520px; object-fit: contain; display: block; }
 
     .card-num-badge {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      background: rgba(26,26,24,0.75);
-      color: #fff;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 99px;
-      backdrop-filter: blur(4px);
+      position: absolute; top: 16px; left: 16px;
+      background: rgba(26,26,24,0.75); color: #fff;
+      font-size: 0.75rem; font-weight: 600; padding: 4px 10px;
+      border-radius: 99px; backdrop-filter: blur(4px); z-index: 2;
     }
-
-    .status-badge {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 99px;
-    }
-    .status-badge.aprovado { background: var(--approve-bg); color: var(--approve); }
-    .status-badge.ajuste { background: var(--revise-bg); color: var(--revise); }
 
     .carousel-wrap { position: relative; }
     .carousel-slides { display: flex; overflow: hidden; }
     .carousel-slide { min-width: 100%; }
-    .carousel-slide img { width: 100%; max-height: 520px; object-fit: contain; display: block; }
-
     .carousel-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      padding: 0 12px;
-      pointer-events: none;
+      position: absolute; top: 50%; transform: translateY(-50%);
+      display: flex; justify-content: space-between; width: 100%; padding: 0 12px; pointer-events: none;
     }
-
     .carousel-btn {
-      pointer-events: all;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.9);
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      transition: background 0.2s;
+      pointer-events: all; width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.9); border: none; cursor: pointer;
+      font-size: 1rem; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15); transition: background 0.2s;
     }
     .carousel-btn:hover { background: #fff; }
-
-    .carousel-dots {
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-      padding: 10px;
-      background: #F0EEE9;
-    }
-    .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--border);
-      cursor: pointer;
-      transition: background 0.2s;
-    }
+    .carousel-dots { display: flex; justify-content: center; gap: 6px; padding: 10px; background: #F0EEE9; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); cursor: pointer; transition: background 0.2s; }
     .dot.active { background: var(--ink); }
 
+    .card-video-wrap { position: relative; background: #0D0D0D; display: flex; align-items: center; justify-content: center; }
+    .card-video-wrap video { width: 100%; max-height: 520px; display: block; }
+
     .card-body { padding: 24px 28px 28px; }
+    .card-caption { font-size: 0.9rem; color: var(--ink-light); line-height: 1.5; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); white-space: pre-wrap; }
 
-    .card-caption {
-      font-size: 0.9rem;
-      color: var(--ink-light);
-      line-height: 1.5;
-      margin-bottom: 20px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--border);
-      white-space: pre-wrap;
-    }
+    .respostas-anteriores { margin-bottom: 20px; }
+    .respostas-titulo { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 10px; }
 
-    .action-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 16px;
+    .resposta-item {
+      display: flex; flex-direction: column; gap: 3px;
+      padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; font-size: 0.83rem;
     }
+    .resposta-item.aprovado { background: var(--approve-bg); }
+    .resposta-item.ajuste { background: var(--revise-bg); }
+    .resposta-nome { font-weight: 600; }
+    .resposta-comentario { color: var(--ink-light); font-size: 0.8rem; }
+
+    .aprovacao-form { border-top: 1px solid var(--border); padding-top: 20px; }
+    .aprovacao-titulo { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 14px; }
+    .aprovacao-form .field-group { margin-bottom: 12px; }
+    .aprovacao-form input { font-size: 0.88rem; padding: 11px 14px; }
+
+    .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
 
     .btn-action {
-      padding: 12px;
-      border-radius: var(--radius);
-      border: 1.5px solid var(--border);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
+      padding: 12px; border-radius: var(--radius); border: 1.5px solid var(--border);
+      font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
     }
-
     .btn-approve { background: var(--approve-bg); border-color: var(--approve); color: var(--approve); }
     .btn-approve:hover, .btn-approve.active { background: var(--approve); color: #fff; }
     .btn-revise { background: var(--revise-bg); border-color: var(--revise); color: var(--revise); }
     .btn-revise:hover, .btn-revise.active { background: var(--revise); color: #fff; }
 
-    .comment-wrap { margin-top: 4px; }
-    .comment-wrap textarea { background: var(--bg); font-size: 0.88rem; padding: 12px 14px; min-height: 70px; }
+    .comment-wrap textarea { background: var(--bg); font-size: 0.88rem; padding: 12px 14px; min-height: 70px; margin-bottom: 10px; }
 
-    .card-video-wrap {
-      position: relative;
-      background: #0D0D0D;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .btn-submit {
+      width: 100%; padding: 13px; background: var(--ink); color: #fff; border: none;
+      border-radius: var(--radius); font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .card-video-wrap video { width: 100%; max-height: 520px; display: block; outline: none; }
-    .video-badge {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      background: rgba(0,0,0,0.6);
-      color: #fff;
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 99px;
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      gap: 5px;
+    .btn-submit:hover { opacity: 0.85; }
+    .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .loading-screen {
+      min-height: 60vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 16px;
+      color: var(--ink-light); font-size: 0.9rem;
     }
-
-    #summary-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 200;
-      background: rgba(26,26,24,0.5);
-      backdrop-filter: blur(4px);
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
+    .loading-spinner {
+      width: 32px; height: 32px; border: 3px solid var(--border);
+      border-top-color: var(--ink); border-radius: 50%; animation: spin 0.7s linear infinite;
     }
-    #summary-modal.open { display: flex; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    .modal-box {
-      background: var(--surface);
-      border-radius: 20px;
-      max-width: 600px;
-      width: 100%;
-      max-height: 85vh;
-      overflow-y: auto;
-      padding: 40px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-      animation: fadeUp 0.3s ease;
+    .expired-screen {
+      min-height: 60vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px; text-align: center; padding: 40px;
     }
+    .expired-screen h2 { font-family: 'DM Serif Display', serif; font-size: 1.6rem; margin-bottom: 8px; }
+    .expired-screen p { color: var(--ink-light); font-size: 0.95rem; line-height: 1.6; }
 
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 32px;
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: var(--ink); color: #fff; padding: 12px 24px;
+      border-radius: 99px; font-size: 0.88rem; font-weight: 600;
+      z-index: 300; opacity: 0; transition: opacity 0.3s;
+      pointer-events: none; white-space: nowrap;
     }
+    .toast.show { opacity: 1; }
 
-    .modal-header h2 { font-family: 'DM Serif Display', serif; font-size: 1.5rem; }
-
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 1.4rem;
-      cursor: pointer;
-      color: var(--ink-light);
-      line-height: 1;
-      padding: 4px;
+    .spinner {
+      width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block;
     }
-
-    .summary-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 32px;
-    }
-
-    .stat-box { padding: 16px; border-radius: var(--radius); text-align: center; }
-    .stat-box.aprovado { background: var(--approve-bg); }
-    .stat-box.ajuste { background: var(--revise-bg); }
-    .stat-box.pendente { background: var(--pending-bg); }
-
-    .stat-num { font-size: 2rem; font-weight: 700; line-height: 1; margin-bottom: 4px; }
-    .stat-box.aprovado .stat-num { color: var(--approve); }
-    .stat-box.ajuste .stat-num { color: var(--revise); }
-    .stat-box.pendente .stat-num { color: var(--pending); }
-    .stat-label { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-light); }
-
-    .summary-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
-
-    .summary-item { padding: 14px 16px; border-radius: var(--radius); border: 1px solid var(--border); }
-    .summary-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-    .summary-item-title { font-size: 0.88rem; font-weight: 600; }
-    .summary-item-badge {
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 99px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .badge-aprovado { background: var(--approve-bg); color: var(--approve); }
-    .badge-ajuste { background: var(--revise-bg); color: var(--revise); }
-    .badge-pendente { background: var(--pending-bg); color: var(--pending); }
-    .summary-item-comment { font-size: 0.84rem; color: var(--ink-light); margin-top: 4px; }
-
-    .btn-copy {
-      width: 100%;
-      padding: 14px;
-      background: var(--ink);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-    .btn-copy:hover { opacity: 0.85; }
 
     @media (max-width: 600px) {
+      .setup-card, .links-card { padding: 32px 20px; }
       .topbar { padding: 12px 16px; flex-wrap: wrap; }
       .cards-container { padding: 24px 16px; }
-      .setup-card { padding: 36px 24px; }
-      .summary-stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-      .modal-box { padding: 28px 20px; }
     }
   </style>
 </head>
 <body>
 
-<div id="setup-screen">
+<div id="setup-screen" class="screen active">
   <div class="setup-card">
-    <p style="font-size:0.72rem;font-weight:600;letter-spacing:0.12em;color:var(--ink-light);text-transform:uppercase;margin-bottom:16px;">Papa PPG</p>
+    <p class="brand">Papa PPG</p>
     <h1>Aprovação de<br>Conteúdo</h1>
-    <p class="subtitle">Cole abaixo os links públicos das imagens que o Nicholas vai revisar. Uma por linha.</p>
+    <p class="subtitle">Crie uma rodada de aprovação. Cada post gera um link individual para o Nicholas revisar — válido por 7 dias.</p>
 
     <div class="field-group">
       <label>Nome da rodada</label>
@@ -471,51 +295,381 @@
     </div>
 
     <div class="field-group">
-      <label>Links das imagens</label>
-      <textarea id="image-links" placeholder="https://drive.google.com/file/d/ABC/view&#10;---&#10;https://drive.google.com/file/d/DEF/view"></textarea>
-      <p class="hint">Cole o link do Drive como ele vem. Separe posts diferentes com <strong>---</strong> (pode ser na mesma linha ou separado). Para vídeo, adicione <strong>#video</strong> no final do link.</p>
+      <label>Posts para aprovação</label>
+      <div class="posts-list" id="posts-list"></div>
+      <button class="btn-add-post" onclick="addPost()">+ Adicionar post</button>
+      <p class="hint" style="margin-top:10px;">Para carrossel, cole múltiplos links do Drive — um por linha — dentro do mesmo post. Para posts individuais, um link por post.</p>
     </div>
 
-    <div class="field-group">
-      <label>Legendas / contexto (opcional)</label>
-      <textarea id="captions" placeholder="Post sobre Modo Cinema&#10;---&#10;Carrossel: 5 dicas de setup"></textarea>
-      <p class="hint">Uma legenda por post, na mesma ordem. Use <strong>---</strong> para separar.</p>
-    </div>
-
-    <button class="btn-primary" onclick="startReview()">Montar aprovação →</button>
+    <button class="btn-primary" id="btn-criar" onclick="criarRodada()">
+      Criar rodada e gerar links →
+    </button>
   </div>
 </div>
 
-<div id="review-screen">
+<div id="links-screen" class="screen">
+  <div class="links-card">
+    <p class="brand">Papa PPG</p>
+    <h2>Links gerados!</h2>
+    <p class="sub">Cada link leva diretamente ao post correspondente e já criou o card no Trello. Compartilhe com o Nicholas.</p>
+    <div id="links-list"></div>
+    <button class="btn-copy-all" onclick="copiarTodosLinks()">Copiar todos os links para WhatsApp</button>
+  </div>
+</div>
+
+<div id="review-screen" class="screen">
   <div class="topbar">
     <div class="topbar-left">
-      <span style="font-size:0.68rem;font-weight:600;letter-spacing:0.12em;color:var(--ink-light);text-transform:uppercase;">Papa PPG</span>
+      <span class="topbar-brand">Papa PPG</span>
       <span class="topbar-title" id="topbar-title">—</span>
       <span class="topbar-meta" id="topbar-meta">—</span>
     </div>
     <div class="progress-wrap">
       <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
-      <span class="progress-label" id="progress-label">0 / 0</span>
+      <span class="progress-label" id="progress-label">—</span>
     </div>
-    <button class="btn-summary" onclick="openSummary()">Ver resumo</button>
   </div>
   <div class="cards-container" id="cards-container"></div>
 </div>
 
-<div id="summary-modal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h2>Resumo da aprovação</h2>
-      <button class="modal-close" onclick="closeSummary()">✕</button>
-    </div>
-    <div class="summary-stats" id="summary-stats"></div>
-    <div class="summary-list" id="summary-list"></div>
-    <button class="btn-copy" onclick="copyReport()">Copiar relatório para WhatsApp</button>
-  </div>
-</div>
+<div class="toast" id="toast"></div>
 
 <script>
-  let items = [];
+  const SUPABASE_URL = 'https://mmoobojkoiwjgitydyry.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_9q4OZ91o2dr2ISnjQrzQeg_rpm3auxW';
+  const TRELLO_KEY   = 'da9f3be1b58b680abb390273e25f0ab3';
+  const TRELLO_TOKEN = 'ATTA8db72e7429e32ad87b75510e20cc93faaec65360cafa7fd5f3146f3c8f9a7f3b73A1CE9D';
+  const TRELLO_LISTA_AGUARDANDO = '69f0841fe3d90846c59a3171';
+  const TRELLO_LISTA_APROVADO   = '69f08422704aa2638127c3ad';
+  const TRELLO_LISTA_AJUSTE     = '69f0842c566abb919b9fa2e2';
+
+  let postCount = 0;
+  let statusSelecionado = null;
+  window._linksGerados = null;
+
+  async function sbGet(path) {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    return r.json();
+  }
+
+  async function sbPost(path, body) {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json', 'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(body)
+    });
+    return r.json();
+  }
+
+  async function sbPatch(path, body) {
+    await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+  }
+
+  async function trelloPost(path, params) {
+    const url = `https://api.trello.com/1/${path}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&` + new URLSearchParams(params).toString();
+    const r = await fetch(url, { method: 'POST' });
+    return r.json();
+  }
+
+  async function trelloPut(path, params) {
+    const url = `https://api.trello.com/1/${path}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&` + new URLSearchParams(params).toString();
+    return fetch(url, { method: 'PUT' });
+  }
+
+  function showToast(msg, duration = 2500) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), duration);
+  }
+
+  function addPost() {
+    postCount++;
+    const list = document.getElementById('posts-list');
+    const div = document.createElement('div');
+    div.className = 'post-item';
+    div.id = `post-item-${postCount}`;
+    div.innerHTML = `
+      <div class="post-item-header">
+        <span class="post-num">Post ${postCount}</span>
+        <button class="btn-remove-post" onclick="removePost(${postCount})">✕</button>
+      </div>
+      <textarea id="links-${postCount}" placeholder="Cole os links do Drive aqui&#10;Um link por linha&#10;Para carrossel: múltiplos links" oninput="detectType(${postCount})"></textarea>
+      <input type="text" id="legenda-${postCount}" placeholder="Legenda ou descrição (opcional)" />
+      <p class="post-type-label" id="type-label-${postCount}">📎 Post único</p>
+    `;
+    list.appendChild(div);
+  }
+
+  function removePost(num) {
+    const el = document.getElementById(`post-item-${num}`);
+    if (el) el.remove();
+  }
+
+  function detectType(num) {
+    const val = document.getElementById(`links-${num}`)?.value.trim() || '';
+    const lines = val.split('\n').filter(l => l.trim());
+    const label = document.getElementById(`type-label-${num}`);
+    if (label) label.textContent = lines.length > 1 ? `🎠 Carrossel (${lines.length} slides)` : '📎 Post único';
+  }
+
+  addPost();
+
+  async function criarRodada() {
+    const nome = document.getElementById('round-name').value.trim();
+    if (!nome) { showToast('Dê um nome para a rodada'); return; }
+
+    const items = document.querySelectorAll('.post-item');
+    const posts = [];
+
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      const id = item.id.replace('post-item-', '');
+      const linksRaw = document.getElementById(`links-${id}`)?.value.trim();
+      if (!linksRaw) continue;
+      const imagens = linksRaw.split('\n').map(l => l.trim()).filter(Boolean);
+      const legenda = document.getElementById(`legenda-${id}`)?.value.trim() || '';
+      posts.push({ ordem: posts.length + 1, imagens, legenda });
+    }
+
+    if (!posts.length) { showToast('Adicione pelo menos um post com link'); return; }
+
+    const btn = document.getElementById('btn-criar');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Criando rodada...';
+
+    try {
+      const rodadaRes = await sbPost('rodadas', { nome });
+      const rodada = Array.isArray(rodadaRes) ? rodadaRes[0] : rodadaRes;
+      if (!rodada?.id) throw new Error('Falha ao criar rodada no banco. Verifique se rodou o SQL no Supabase.');
+
+      const linksGerados = [];
+      const baseUrl = window.location.origin + window.location.pathname;
+
+      for (const post of posts) {
+        const postRes = await sbPost('posts', {
+          rodada_id: rodada.id,
+          ordem: post.ordem,
+          imagens: post.imagens,
+          legenda: post.legenda
+        });
+        const postCriado = Array.isArray(postRes) ? postRes[0] : postRes;
+        if (!postCriado?.id) continue;
+
+        const linkPost = `${baseUrl}?post=${postCriado.id}`;
+        const nomeCard = `${nome} — Post ${post.ordem}${post.legenda ? ': ' + post.legenda.substring(0, 40) : ''}`;
+
+        try {
+          const trelloCard = await trelloPost('cards', {
+            idList: TRELLO_LISTA_AGUARDANDO,
+            name: nomeCard,
+            desc: `🔗 Link de aprovação: ${linkPost}\n\n${post.legenda ? '📝 ' + post.legenda + '\n\n' : ''}📎 ${post.imagens.length > 1 ? 'Carrossel com ' + post.imagens.length + ' slides' : 'Post único'}`
+          });
+          if (trelloCard?.id) {
+            await sbPatch(`posts?id=eq.${postCriado.id}`, { trello_card_id: trelloCard.id });
+          }
+        } catch (te) {
+          console.warn('Trello error:', te);
+        }
+
+        linksGerados.push({
+          titulo: `Post ${post.ordem}${post.legenda ? ' — ' + post.legenda.substring(0, 40) : ''}`,
+          url: linkPost
+        });
+      }
+
+      mostrarLinks(nome, linksGerados);
+
+    } catch (e) {
+      console.error(e);
+      showToast('Erro: ' + e.message);
+      btn.disabled = false;
+      btn.innerHTML = 'Criar rodada e gerar links →';
+    }
+  }
+
+  function mostrarLinks(nome, links) {
+    document.getElementById('setup-screen').classList.remove('active');
+    document.getElementById('links-screen').classList.add('active');
+
+    const list = document.getElementById('links-list');
+    list.innerHTML = '';
+
+    links.forEach(link => {
+      const div = document.createElement('div');
+      div.className = 'link-item';
+      div.innerHTML = `
+        <div class="link-info">
+          <div class="link-title">${link.titulo}</div>
+          <div class="link-url">${link.url}</div>
+        </div>
+        <button class="btn-copy-link" onclick="copiarLink('${link.url}', this)">Copiar</button>
+      `;
+      list.appendChild(div);
+    });
+
+    window._linksGerados = { nome, links };
+  }
+
+  function copiarLink(url, btn) {
+    navigator.clipboard.writeText(url).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copiado';
+      setTimeout(() => btn.textContent = orig, 2000);
+    });
+  }
+
+  function copiarTodosLinks() {
+    const d = window._linksGerados;
+    if (!d) return;
+    let text = `*${d.nome} — Links de aprovação*\n\n`;
+    d.links.forEach(l => { text += `📎 *${l.titulo}*\n${l.url}\n\n`; });
+    navigator.clipboard.writeText(text.trim()).then(() => showToast('Links copiados!'));
+  }
+
+  async function carregarPost(postId) {
+    document.getElementById('setup-screen').classList.remove('active');
+    document.getElementById('review-screen').classList.add('active');
+
+    document.getElementById('cards-container').innerHTML = `
+      <div class="loading-screen">
+        <div class="loading-spinner"></div>
+        <p>Carregando...</p>
+      </div>
+    `;
+
+    try {
+      const posts = await sbGet(`posts?id=eq.${postId}&select=*`);
+      const post = posts?.[0];
+      if (!post) throw new Error('Post não encontrado');
+
+      const rodadas = await sbGet(`rodadas?id=eq.${post.rodada_id}&select=*`);
+      const rodada = rodadas?.[0];
+      if (!rodada) throw new Error('Rodada não encontrada');
+
+      if (new Date(rodada.expira_em) < new Date()) {
+        document.getElementById('cards-container').innerHTML = `
+          <div class="expired-screen">
+            <h2>Este link expirou</h2>
+            <p>O período de aprovação de 7 dias encerrou.<br>Entre em contato com a Papa PPG.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const aprovacoes = await sbGet(`aprovacoes?post_id=eq.${postId}&select=*&order=criado_em.asc`);
+
+      document.getElementById('topbar-title').textContent = rodada.nome;
+      document.getElementById('topbar-meta').textContent = `Post ${post.ordem}${post.legenda ? ' · ' + post.legenda.substring(0, 30) : ''}`;
+      atualizarProgresso(aprovacoes?.length || 0);
+      renderizarPost(post, aprovacoes || []);
+
+    } catch (e) {
+      console.error(e);
+      document.getElementById('cards-container').innerHTML = `
+        <div class="expired-screen">
+          <h2>Algo deu errado</h2>
+          <p>${e.message}</p>
+        </div>
+      `;
+    }
+  }
+
+  function atualizarProgresso(total) {
+    document.getElementById('progress-label').textContent = total + ' resposta' + (total !== 1 ? 's' : '');
+    document.getElementById('progress-fill').style.width = total > 0 ? '100%' : '10%';
+  }
+
+  function renderizarPost(post, aprovacoes) {
+    const isCarrossel = post.imagens.length > 1;
+    const imageHtml = isCarrossel ? renderCarrossel(post.imagens) : renderImagem(post.imagens[0]);
+
+    const respostasHtml = aprovacoes.length > 0 ? `
+      <div class="respostas-anteriores">
+        <p class="respostas-titulo">Respostas (${aprovacoes.length})</p>
+        ${aprovacoes.map(a => `
+          <div class="resposta-item ${a.status}">
+            <div class="resposta-nome">${a.nome_revisor} — ${a.status === 'aprovado' ? '✓ Aprovado' : '✎ Pedir ajuste'}</div>
+            ${a.comentario ? `<div class="resposta-comentario">💬 ${a.comentario}</div>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    ` : '';
+
+    document.getElementById('cards-container').innerHTML = `
+      <div class="card">
+        ${imageHtml}
+        <div class="card-body">
+          ${post.legenda ? `<div class="card-caption">${post.legenda}</div>` : ''}
+          ${respostasHtml}
+          <div class="aprovacao-form">
+            <p class="aprovacao-titulo">Sua avaliação</p>
+            <div class="field-group">
+              <input type="text" id="nome-revisor" placeholder="Seu nome (ex: Nicholas)" />
+            </div>
+            <div class="action-row">
+              <button class="btn-action btn-approve" id="btn-approve" onclick="selecionarStatus('aprovado')">✓ Aprovado</button>
+              <button class="btn-action btn-revise" id="btn-revise" onclick="selecionarStatus('ajuste')">✎ Pedir ajuste</button>
+            </div>
+            <div class="comment-wrap">
+              <textarea id="comentario" placeholder="Comentário (opcional)..."></textarea>
+            </div>
+            <button class="btn-submit" id="btn-submit" onclick="enviarAprovacao('${post.id}', '${post.trello_card_id || ''}')">Enviar avaliação</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function selecionarStatus(status) {
+    statusSelecionado = status;
+    document.getElementById('btn-approve').classList.toggle('active', status === 'aprovado');
+    document.getElementById('btn-revise').classList.toggle('active', status === 'ajuste');
+  }
+
+  async function enviarAprovacao(postId, trelloCardId) {
+    const nome = document.getElementById('nome-revisor').value.trim();
+    const comentario = document.getElementById('comentario').value.trim();
+
+    if (!nome) { showToast('Digite seu nome antes de enviar'); return; }
+    if (!statusSelecionado) { showToast('Selecione Aprovado ou Pedir ajuste'); return; }
+
+    const btn = document.getElementById('btn-submit');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Enviando...';
+
+    try {
+      await sbPost('aprovacoes', { post_id: postId, nome_revisor: nome, status: statusSelecionado, comentario });
+
+      if (trelloCardId) {
+        const listaDestino = statusSelecionado === 'aprovado' ? TRELLO_LISTA_APROVADO : TRELLO_LISTA_AJUSTE;
+        await trelloPut(`cards/${trelloCardId}`, { idList: listaDestino });
+        const txtComentario = `*${nome}* marcou como *${statusSelecionado === 'aprovado' ? '✅ Aprovado' : '✎ Ajuste solicitado'}*${comentario ? '\n\n💬 ' + comentario : ''}`;
+        await trelloPost(`cards/${trelloCardId}/actions/comments`, { text: txtComentario });
+      }
+
+      showToast('Avaliação enviada! Obrigado.', 3000);
+      setTimeout(() => carregarPost(postId), 1800);
+
+    } catch (e) {
+      console.error(e);
+      showToast('Erro ao enviar. Tente novamente.');
+      btn.disabled = false;
+      btn.innerHTML = 'Enviar avaliação';
+    }
+  }
 
   function extractDriveId(url) {
     const m = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) ||
@@ -524,276 +678,72 @@
     return m ? m[1] : null;
   }
 
-  function isDriveLink(url) {
-    return url.includes('drive.google.com');
-  }
+  function isDriveLink(url) { return url.includes('drive.google.com'); }
+  function isVideoLink(url) { return url.endsWith('#video') || /\.(mp4|mov|webm|ogg)(\?|$)/i.test(url); }
+  function cleanUrl(url) { return url.replace(/#video$/, ''); }
 
-  function isVideoLink(url) {
-    return url.endsWith('#video') || url.match(/\.(mp4|mov|webm|ogg)(\?|$)/i);
-  }
-
-  function cleanUrl(url) {
-    return url.replace(/#video$/, '');
-  }
-
-  function parseInput() {
-    const linksRaw = document.getElementById('image-links').value.trim();
-    const captionsRaw = document.getElementById('captions').value.trim();
-
-    const normalized = linksRaw
-      .replace(/\s*---\s*/g, '\n---\n')
-      .replace(/\n{2,}/g, '\n');
-
-    const linkGroups = normalized.split(/\n---\n/).map(g =>
-      g.trim().split('\n').map(l => l.trim()).filter(l => l && l !== '---')
-    ).filter(g => g.length > 0);
-
-    const captionGroups = captionsRaw
-      ? captionsRaw.replace(/\s*---\s*/g, '\n---\n').split(/\n---\n/).map(g => g.trim()).filter(Boolean)
-      : [];
-
-    items = linkGroups.map((group, i) => ({
-      type: group.length > 1 ? 'carousel' : 'single',
-      images: group,
-      caption: captionGroups[i] || '',
-      status: null,
-      comment: ''
-    }));
-  }
-
-  function startReview() {
-    const name = document.getElementById('round-name').value.trim() || 'Revisão de conteúdo';
-    const links = document.getElementById('image-links').value.trim();
-    if (!links) { alert('Cole pelo menos um link de imagem.'); return; }
-
-    parseInput();
-
-    document.getElementById('setup-screen').style.display = 'none';
-    document.getElementById('review-screen').style.display = 'block';
-    document.getElementById('topbar-title').textContent = name;
-    document.getElementById('topbar-meta').textContent = items.length + (items.length === 1 ? ' item para revisar' : ' itens para revisar');
-
-    renderCards();
-    updateProgress();
-  }
-
-  function renderCards() {
-    const container = document.getElementById('cards-container');
-    container.innerHTML = '';
-    items.forEach((item, idx) => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.id = 'card-' + idx;
-      card.style.animationDelay = (idx * 0.07) + 's';
-      const imageHtml = item.type === 'carousel' ? renderCarousel(item.images, idx) : renderSingle(item.images[0], idx);
-      card.innerHTML = `
-        ${imageHtml}
-        <div class="card-body">
-          ${item.caption ? `<div class="card-caption">${item.caption}</div>` : ''}
-          <div class="action-row">
-            <button class="btn-action btn-approve" id="btn-approve-${idx}" onclick="setStatus(${idx}, 'aprovado')">✓ Aprovado</button>
-            <button class="btn-action btn-revise" id="btn-revise-${idx}" onclick="setStatus(${idx}, 'ajuste')">✎ Pedir ajuste</button>
-          </div>
-          <div class="comment-wrap">
-            <textarea placeholder="Comentário (opcional)..." id="comment-${idx}" oninput="saveComment(${idx})"></textarea>
-          </div>
-        </div>
-      `;
-      container.appendChild(card);
-    });
-  }
-
-  function renderSingle(url, idx) {
+  function renderImagem(url) {
     if (isVideoLink(url)) {
-      const clean = cleanUrl(url);
-      const driveId = extractDriveId(clean);
-      if (driveId) {
-        return `
-          <div class="card-video-wrap" style="min-height:300px;">
-            <span class="card-num-badge" style="z-index:2;">Card ${idx + 1}</span>
-            <span class="status-badge" id="badge-${idx}" style="z-index:2;"></span>
-            <span class="video-badge" style="top:44px;">▶ Vídeo</span>
-            <iframe src="https://drive.google.com/file/d/${driveId}/preview"
-              width="100%" height="420" frameborder="0" allowfullscreen
-              style="display:block;background:#000;"></iframe>
-          </div>`;
-      }
-      return `
-        <div class="card-video-wrap">
-          <span class="card-num-badge" style="z-index:2;">Card ${idx + 1}</span>
-          <span class="status-badge" id="badge-${idx}" style="z-index:2;"></span>
-          <span class="video-badge" style="top:44px;">▶ Vídeo</span>
-          <video controls preload="metadata" style="width:100%;max-height:420px;display:block;">
-            <source src="${clean}" />
-          </video>
-        </div>`;
+      const driveId = extractDriveId(cleanUrl(url));
+      if (driveId) return `<div class="card-video-wrap" style="min-height:300px;">
+        <span class="card-num-badge" style="z-index:2;">Vídeo</span>
+        <iframe src="https://drive.google.com/file/d/${driveId}/preview" width="100%" height="420" frameborder="0" allowfullscreen style="display:block;background:#000;"></iframe>
+      </div>`;
     }
     if (isDriveLink(url)) {
       const driveId = extractDriveId(url);
-      if (driveId) {
-        return `
-          <div class="card-image-wrap" style="min-height:320px;background:#f0eee9;">
-            <iframe src="https://drive.google.com/file/d/${driveId}/preview"
-              width="100%" height="480" frameborder="0"
-              style="display:block;border:none;"></iframe>
-            <span class="card-num-badge" style="z-index:2;">Card ${idx + 1}</span>
-            <span class="status-badge" id="badge-${idx}" style="z-index:2;"></span>
-          </div>`;
-      }
-    }
-    return `
-      <div class="card-image-wrap">
-        <img src="${url}" alt="Card ${idx + 1}" onerror="this.style.opacity=0"/>
-        <span class="card-num-badge">Card ${idx + 1}</span>
-        <span class="status-badge" id="badge-${idx}"></span>
+      if (driveId) return `<div class="card-image-wrap" style="min-height:320px;background:#f0eee9;">
+        <iframe src="https://drive.google.com/file/d/${driveId}/preview" width="100%" height="480" frameborder="0" style="display:block;border:none;"></iframe>
+        <span class="card-num-badge" style="z-index:2;">Post</span>
       </div>`;
+    }
+    return `<div class="card-image-wrap">
+      <img src="${url}" alt="Post" onerror="this.style.opacity=0"/>
+      <span class="card-num-badge">Post</span>
+    </div>`;
   }
 
-  function renderCarousel(images, idx) {
-    const slides = images.map((url, si) => {
-      if (isVideoLink(url)) {
-        const clean = cleanUrl(url);
-        const driveId = extractDriveId(clean);
-        if (driveId) {
-          return `<div class="carousel-slide" style="background:#000;min-height:300px;display:flex;align-items:center;">
-            <iframe src="https://drive.google.com/file/d/${driveId}/preview"
-              width="100%" height="400" frameborder="0" allowfullscreen style="display:block;"></iframe>
-          </div>`;
-        }
-        return `<div class="carousel-slide" style="background:#000;">
-          <video controls preload="metadata" style="width:100%;max-height:420px;display:block;">
-            <source src="${clean}" />
-          </video>
-        </div>`;
-      }
+  function renderCarrossel(imagens) {
+    const slides = imagens.map((url, si) => {
       if (isDriveLink(url)) {
         const driveId = extractDriveId(url);
-        if (driveId) {
-          return `<div class="carousel-slide" style="background:#f0eee9;min-height:320px;">
-            <iframe src="https://drive.google.com/file/d/${driveId}/preview"
-              width="100%" height="480" frameborder="0" style="display:block;border:none;"></iframe>
-          </div>`;
-        }
-      }
-      return `<div class="carousel-slide"><img src="${url}" alt="Slide ${si + 1}" style="width:100%;max-height:520px;object-fit:contain;display:block;"/></div>`;
-    }).join('');
-
-    const dots = images.map((_, si) => `<div class="dot ${si === 0 ? 'active' : ''}" onclick="goSlide(${idx}, ${si})"></div>`).join('');
-
-    return `
-      <div class="card-image-wrap carousel-wrap" id="carousel-wrap-${idx}">
-        <span class="card-num-badge">Carrossel ${idx + 1} · <span id="slide-count-${idx}">1/${images.length}</span></span>
-        <span class="status-badge" id="badge-${idx}"></span>
-        <div class="carousel-slides" id="carousel-${idx}">${slides}</div>
-        <div class="carousel-nav">
-          <button class="carousel-btn" onclick="goSlide(${idx}, 'prev')">‹</button>
-          <button class="carousel-btn" onclick="goSlide(${idx}, 'next')">›</button>
-        </div>
-        <div class="carousel-dots" id="dots-${idx}">${dots}</div>
-      </div>`;
-  }
-
-  const carouselState = {};
-
-  function goSlide(idx, direction) {
-    const item = items[idx];
-    if (!carouselState[idx]) carouselState[idx] = 0;
-    let cur = carouselState[idx];
-    const total = item.images.length;
-    if (direction === 'prev') cur = (cur - 1 + total) % total;
-    else if (direction === 'next') cur = (cur + 1) % total;
-    else cur = direction;
-    carouselState[idx] = cur;
-    const track = document.getElementById('carousel-' + idx);
-    track.style.transform = `translateX(-${cur * 100}%)`;
-    track.style.transition = 'transform 0.3s ease';
-    document.getElementById('slide-count-' + idx).textContent = `${cur + 1}/${total}`;
-    document.querySelectorAll(`#dots-${idx} .dot`).forEach((d, i) => d.classList.toggle('active', i === cur));
-  }
-
-  function setStatus(idx, status) {
-    items[idx].status = status;
-    const card = document.getElementById('card-' + idx);
-    card.className = 'card status-' + status;
-    const badge = document.getElementById('badge-' + idx);
-    badge.textContent = status === 'aprovado' ? '✓ Aprovado' : '✎ Ajuste';
-    badge.className = 'status-badge ' + status;
-    document.getElementById('btn-approve-' + idx).classList.toggle('active', status === 'aprovado');
-    document.getElementById('btn-revise-' + idx).classList.toggle('active', status === 'ajuste');
-    updateProgress();
-  }
-
-  function saveComment(idx) {
-    items[idx].comment = document.getElementById('comment-' + idx).value;
-  }
-
-  function updateProgress() {
-    const done = items.filter(i => i.status !== null).length;
-    const total = items.length;
-    const pct = total ? (done / total) * 100 : 0;
-    document.getElementById('progress-fill').style.width = pct + '%';
-    document.getElementById('progress-label').textContent = done + ' / ' + total;
-  }
-
-  function openSummary() {
-    items.forEach((item, idx) => {
-      const el = document.getElementById('comment-' + idx);
-      if (el) item.comment = el.value;
-    });
-    const aprovados = items.filter(i => i.status === 'aprovado').length;
-    const ajustes = items.filter(i => i.status === 'ajuste').length;
-    const pendentes = items.filter(i => i.status === null).length;
-    document.getElementById('summary-stats').innerHTML = `
-      <div class="stat-box aprovado"><div class="stat-num">${aprovados}</div><div class="stat-label">Aprovados</div></div>
-      <div class="stat-box ajuste"><div class="stat-num">${ajustes}</div><div class="stat-label">Ajustes</div></div>
-      <div class="stat-box pendente"><div class="stat-num">${pendentes}</div><div class="stat-label">Pendentes</div></div>
-    `;
-    const list = items.map((item, idx) => {
-      const statusLabel = item.status === 'aprovado' ? 'Aprovado' : item.status === 'ajuste' ? 'Pedir ajuste' : 'Pendente';
-      const badgeClass = item.status === 'aprovado' ? 'badge-aprovado' : item.status === 'ajuste' ? 'badge-ajuste' : 'badge-pendente';
-      const title = item.type === 'carousel' ? `Carrossel ${idx + 1}` : `Card ${idx + 1}`;
-      return `
-        <div class="summary-item">
-          <div class="summary-item-header">
-            <span class="summary-item-title">${title}${item.caption ? ' — ' + item.caption.substring(0, 40) + (item.caption.length > 40 ? '…' : '') : ''}</span>
-            <span class="summary-item-badge ${badgeClass}">${statusLabel}</span>
-          </div>
-          ${item.comment ? `<div class="summary-item-comment">💬 ${item.comment}</div>` : ''}
+        if (driveId) return `<div class="carousel-slide" style="background:#f0eee9;min-height:320px;">
+          <iframe src="https://drive.google.com/file/d/${driveId}/preview" width="100%" height="480" frameborder="0" style="display:block;border:none;"></iframe>
         </div>`;
+      }
+      return `<div class="carousel-slide"><img src="${url}" alt="Slide ${si+1}" style="width:100%;max-height:520px;object-fit:contain;display:block;"/></div>`;
     }).join('');
-    document.getElementById('summary-list').innerHTML = list;
-    document.getElementById('summary-modal').classList.add('open');
+
+    const dots = imagens.map((_, si) => `<div class="dot ${si===0?'active':''}" onclick="goSlide(${si})"></div>`).join('');
+
+    return `<div class="card-image-wrap carousel-wrap">
+      <span class="card-num-badge" style="z-index:2;">Carrossel · <span id="slide-count">1/${imagens.length}</span></span>
+      <div class="carousel-slides" id="carousel-main">${slides}</div>
+      <div class="carousel-nav">
+        <button class="carousel-btn" onclick="goSlide('prev')">‹</button>
+        <button class="carousel-btn" onclick="goSlide('next')">›</button>
+      </div>
+      <div class="carousel-dots" id="dots-main">${dots}</div>
+    </div>`;
   }
 
-  function closeSummary() {
-    document.getElementById('summary-modal').classList.remove('open');
+  let currentSlide = 0;
+  function goSlide(direction) {
+    const track = document.getElementById('carousel-main');
+    if (!track) return;
+    const total = track.querySelectorAll('.carousel-slide').length;
+    if (direction === 'prev') currentSlide = (currentSlide - 1 + total) % total;
+    else if (direction === 'next') currentSlide = (currentSlide + 1) % total;
+    else currentSlide = direction;
+    track.style.transform = `translateX(-${currentSlide * 100}%)`;
+    track.style.transition = 'transform 0.3s ease';
+    const countEl = document.getElementById('slide-count');
+    if (countEl) countEl.textContent = `${currentSlide + 1}/${total}`;
+    document.querySelectorAll('#dots-main .dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
   }
 
-  function copyReport() {
-    const name = document.getElementById('topbar-title').textContent;
-    const aprovados = items.filter(i => i.status === 'aprovado').length;
-    const ajustes = items.filter(i => i.status === 'ajuste').length;
-    const pendentes = items.filter(i => i.status === null).length;
-    let text = `*Aprovação — ${name}*\n`;
-    text += `✅ ${aprovados} aprovados  ✎ ${ajustes} ajustes  ⏳ ${pendentes} pendentes\n\n`;
-    items.forEach((item, idx) => {
-      const title = item.type === 'carousel' ? `Carrossel ${idx + 1}` : `Card ${idx + 1}`;
-      const statusEmoji = item.status === 'aprovado' ? '✅' : item.status === 'ajuste' ? '✎' : '⏳';
-      text += `${statusEmoji} *${title}*`;
-      if (item.caption) text += ` — ${item.caption.substring(0, 50)}`;
-      text += '\n';
-      if (item.comment) text += `   💬 ${item.comment}\n`;
-    });
-    navigator.clipboard.writeText(text).then(() => {
-      const btn = document.querySelector('.btn-copy');
-      btn.textContent = 'Copiado!';
-      setTimeout(() => btn.textContent = 'Copiar relatório para WhatsApp', 2000);
-    });
-  }
-
-  document.getElementById('summary-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeSummary();
-  });
+  const postId = new URLSearchParams(window.location.search).get('post');
+  if (postId) carregarPost(postId);
 </script>
 </body>
 </html>
