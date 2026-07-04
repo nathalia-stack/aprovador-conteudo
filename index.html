@@ -701,6 +701,22 @@
   let currentImageIdx = 0;
   let statusSelecionado = null;
 
+  // Converter URL do Drive /file/d/ID para uc?export=view&id=ID
+  function converterURLDrive(url) {
+    // Se já está em uc?export, retorna igual
+    if (url.includes('uc?export=view') || url.includes('uc?export=download')) {
+      return url;
+    }
+    
+    // Se está em /file/d/, extrai o ID
+    const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    if (match) {
+      return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    }
+    
+    return url;
+  }
+
   async function sbPost(path, body) {
     const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
       method: 'POST',
@@ -756,7 +772,7 @@
       return;
     }
 
-    const imagens = linksRaw.split('\n').map(l => l.trim()).filter(Boolean);
+    const imagens = linksRaw.split('\n').map(l => l.trim()).filter(Boolean).map(converterURLDrive);
     if (!imagens.length) {
       alert('Adicione pelo menos um link');
       return;
