@@ -212,7 +212,8 @@
       overflow: hidden;
     }
 
-    .carousel-image-container img {
+    .carousel-image-container img,
+    .carousel-image-container iframe {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -647,7 +648,6 @@
   <div class="container">
     <div class="post-card">
       <div class="carousel-image-container" id="carousel-container">
-        <img id="carousel-img" src="" alt="Conteúdo" />
         <span class="week-badge" id="week-badge">Semana</span>
         <button class="nav-button prev" id="btn-prev" onclick="prevImage()">‹</button>
         <button class="nav-button next" id="btn-next" onclick="nextImage()">›</button>
@@ -701,20 +701,58 @@
   let currentImageIdx = 0;
   let statusSelecionado = null;
 
-  // Converter URL do Drive /file/d/ID para uc?export=view&id=ID
-  function converterURLDrive(url) {
-    // Se já está em uc?export, retorna igual
-    if (url.includes('uc?export=view') || url.includes('uc?export=download')) {
-      return url;
-    }
+  // Extrair ID do Google Drive de qualquer formato
+  function extrairIDDrive(url) {
+    if (!url) return null;
     
-    // Se está em /file/d/, extrai o ID
-    const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
-    if (match) {
-      return `https://drive.google.com/uc?export=view&id=${match[1]}`;
-    }
+    // De /file/d/ID
+    const match1 = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    if (match1) return match1[1];
     
-    return url;
+    // De uc?export=view&id=ID
+    const match2 = url.match(/id=([a-zA-Z0-9-_]+)/);
+    if (match2) return match2[1];
+    
+    // De lh3.googleusercontent.com/d/ID
+    const match3 = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    if (match3) return match3[1];
+    
+    return null;
+  }
+
+  // Verificar se é vídeo
+  function ehVideo(url) {
+    return url && (url.includes('#video') || url.includes('video'));
+  }
+
+  // Criar elemento de mídia (imagem ou vídeo)
+  function criarElementoMidia(url) {
+    const id = extrairIDDrive(url);
+    if (!id) return null;
+
+    if (ehVideo(url)) {
+      // Para vídeo, usa iframe
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://drive.google.com/file/d/${id}/preview`;
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
+      iframe.style.border = 'none';
+      iframe.allow = 'autoplay';
+      return iframe;
+    } else {
+      // Para imagem
+      const img = document.createElement('img');
+      img.src = `https://lh3.googleusercontent.com/d/${id}`;
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'cover';
+      img.alt = 'Conteúdo do carrossel';
+      img.onerror = function() {
+        // Fallback se lh3 não funcionar
+        this.src = `https://drive.google.com/thumbnail?id=${id}&sz=w1200`;
+      };
+      return img;
+    }
   }
 
   async function sbPost(path, body) {
@@ -772,7 +810,7 @@
       return;
     }
 
-    const imagens = linksRaw.split('\n').map(l => l.trim()).filter(Boolean).map(converterURLDrive);
+    const imagens = linksRaw.split('\n').map(l => l.trim()).filter(Boolean);
     if (!imagens.length) {
       alert('Adicione pelo menos um link');
       return;
@@ -887,13 +925,29 @@
   }
 
   function renderCarrossel() {
-    const img = currentImages[currentImageIdx];
-    document.getElementById('carousel-img').src = img;
+    const container = document.getElementById('carousel-container');
+    const url = currentImages[currentImageIdx];
+    
+    // Limpar container
+    const oldMedia = container.querySelector('img, iframe');
+    if (oldMedia) oldMedia.remove();
+    
+    // Criar novo elemento de mídia (imagem ou vídeo)
+    const media = criarElementoMidia(url);
+    if (media) {
+      media.id = 'carousel-img';
+      media.style.position = 'absolute';
+      media.style.top = '0';
+      media.style.left = '0';
+      container.insertBefore(media, container.querySelector('.nav-button'));
+    }
 
+    // Atualizar indicadores
     document.querySelectorAll('.indicator').forEach((el, i) => {
       el.classList.toggle('active', i === currentImageIdx);
     });
 
+    // Mostrar/esconder botões de navegação
     const btnPrev = document.getElementById('btn-prev');
     const btnNext = document.getElementById('btn-next');
     btnPrev.style.display = currentImages.length > 1 ? 'flex' : 'none';
