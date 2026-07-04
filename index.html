@@ -212,8 +212,7 @@
       overflow: hidden;
     }
 
-    .carousel-image-container img,
-    .carousel-image-container video {
+    .carousel-image-container img {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -293,15 +292,6 @@
       padding: 24px 28px;
     }
 
-    .legenda {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem;
-      color: var(--ink);
-      margin-bottom: 16px;
-      line-height: 1.5;
-      font-weight: 400;
-    }
-
     .territorio-badge {
       font-size: 0.72rem;
       color: var(--ink-light);
@@ -310,6 +300,15 @@
       border-radius: var(--radius);
       display: inline-block;
       margin-bottom: 16px;
+    }
+
+    .legenda {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      margin-bottom: 12px;
+      line-height: 1.5;
+      font-weight: 400;
     }
 
     .descricao {
@@ -321,37 +320,75 @@
       word-break: break-word;
     }
 
-    .territorio-badge {
-      font-size: 0.72rem;
+    .counter {
+      font-size: 0.78rem;
       color: var(--ink-light);
       background: var(--bg);
-      padding: 4px 10px;
+      padding: 4px 12px;
       border-radius: var(--radius);
       display: inline-block;
-      margin-bottom: 16px;
-    }
-
-    .briefing-box {
-      background: var(--bg);
-      padding: 12px 14px;
-      border-radius: var(--radius);
-      border-left: 3px solid var(--ink);
       margin-bottom: 20px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
     }
 
-    .briefing-label {
-      font-size: 0.68rem;
+    /* ===== LINKS ===== */
+    .links-section {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .links-label {
+      font-size: 0.78rem;
       font-weight: 600;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--ink-light);
-      margin-bottom: 4px;
+      margin-bottom: 12px;
+      display: block;
     }
 
-    .briefing-text {
+    .links-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .link-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: var(--bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .link-item:hover {
+      border-color: var(--ink);
+      background: var(--surface);
+    }
+
+    .link-icon {
+      font-size: 0.9rem;
+      color: var(--ink-light);
+    }
+
+    .link-item a {
+      flex: 1;
       font-size: 0.85rem;
       color: var(--ink);
-      line-height: 1.5;
+      text-decoration: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      word-break: break-all;
+    }
+
+    .link-item a:hover {
+      text-decoration: underline;
     }
 
     /* ===== APPROVAL FORM ===== */
@@ -389,48 +426,6 @@
     .select-wrap select {
       padding-right: 36px;
       cursor: pointer;
-    }
-
-    .btn-approve {
-      width: 100%;
-      padding: 12px;
-      background: var(--approve-bg);
-      border: 1.5px solid var(--approve);
-      color: var(--approve);
-      border-radius: var(--radius);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-bottom: 12px;
-    }
-
-    .btn-approve:hover,
-    .btn-approve.active {
-      background: var(--approve);
-      color: #fff;
-    }
-
-    .btn-revise {
-      width: 100%;
-      padding: 12px;
-      background: #FEF3E2;
-      border: 1.5px solid #D97706;
-      color: #D97706;
-      border-radius: var(--radius);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-bottom: 12px;
-    }
-
-    .btn-revise:hover,
-    .btn-revise.active {
-      background: #D97706;
-      color: #fff;
     }
 
     .buttons-group {
@@ -559,87 +554,13 @@
       line-height: 1.5;
     }
 
-    .links-section {
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border);
-    }
-
-    .links-label {
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
+    .comment-date {
+      font-size: 0.7rem;
       color: var(--ink-light);
-      margin-bottom: 12px;
-      display: block;
+      margin-top: 4px;
+      font-style: italic;
     }
 
-    .links-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .link-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 12px;
-      background: var(--bg);
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      transition: all 0.2s;
-    }
-
-    .link-item:hover {
-      border-color: var(--ink);
-      background: var(--surface);
-    }
-
-    .link-icon {
-      font-size: 0.9rem;
-      color: var(--ink-light);
-    }
-
-    .link-item a {
-      flex: 1;
-      font-size: 0.85rem;
-      color: var(--ink);
-      text-decoration: none;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      word-break: break-all;
-    }
-
-    .link-item a:hover {
-      color: var(--approve);
-      text-decoration: underline;
-    }
-
-    /* ===== LOADING ===== */
-    .loading {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 400px;
-      gap: 12px;
-    }
-
-    .spinner {
-      width: 32px;
-      height: 32px;
-      border: 3px solid var(--border);
-      border-top-color: var(--ink);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ===== RESPONSIVE ===== */
     @media (max-width: 600px) {
       .setup-card { padding: 32px 20px; }
       .container { padding: 24px 16px; }
@@ -652,8 +573,8 @@
 <div id="setup-screen" class="screen active">
   <div class="setup-card">
     <p class="brand">Papa PPG</p>
-    <h1>Aprovação<br>iPlace × Apple</h1>
-    <p class="subtitle">Preencha os dados do carrossel e gere o link de aprovação.</p>
+    <h1>Aprovação<br>de Conteúdo</h1>
+    <p class="subtitle">Preencha os dados e gere o link de aprovação.</p>
 
     <div class="field-group">
       <label>Briefing</label>
@@ -682,30 +603,30 @@
           <option value="Saúde & Performance">Saúde & Performance — Bem-estar, fitness, saúde</option>
         </select>
       </div>
-      <p class="hint">Cada território tem seu próprio público e linguagem</p>
+      <p class="hint">Cada território tem seu próprio público e linguagem.</p>
     </div>
 
     <div class="field-group">
-      <label>Links do Google Drive — Artes do Carrossel (um por linha)</label>
+      <label>Links do Google Drive - Artes do Carrossel (um por linha)</label>
       <textarea id="links-drive" placeholder="https://drive.google.com/uc?export=view&id=...&#10;https://drive.google.com/uc?export=view&id=..."></textarea>
       <p class="hint">Imagens ou vídeos que compõem o carrossel. Um link por linha.</p>
     </div>
 
     <div class="field-group">
-      <label>Links de Fotos — Referências Visuais (um por linha)</label>
+      <label>Links de Fotos - Referências Visuais (um por linha)</label>
       <textarea id="links-fotos" placeholder="https://...&#10;https://..."></textarea>
       <p class="hint">Imagens de referência ou contexto visual (opcional).</p>
     </div>
 
     <div class="field-group">
-      <label>Links de Referência — Pesquisa e Fontes (um por linha)</label>
+      <label>Links de Referência - Pesquisa e Fontes (um por linha)</label>
       <textarea id="links-ref" placeholder="https://...&#10;https://..."></textarea>
       <p class="hint">Links de pesquisa, artigos, ou fontes (opcional).</p>
     </div>
 
     <div class="field-group">
       <label>ID do Card Trello</label>
-      <input type="text" id="trello-card-id" placeholder="Ex: abc123def456" />
+      <input type="text" id="trello-card-id" placeholder="Ex: Z71l3IF5" />
       <p class="hint">Os comentários aparecerão neste card.</p>
     </div>
 
@@ -718,14 +639,13 @@
   <div class="topbar">
     <div class="topbar-left">
       <span class="topbar-brand">Papa PPG</span>
-      <span class="topbar-title" id="topbar-title">Aprovação de Conteúdo</span>
+      <span class="topbar-title" id="topbar-title">Aprovação</span>
       <span class="topbar-subtitle" id="topbar-subtitle">—</span>
     </div>
   </div>
 
   <div class="container">
     <div class="post-card">
-      <!-- CARROSSEL -->
       <div class="carousel-image-container" id="carousel-container">
         <img id="carousel-img" src="" alt="Conteúdo" />
         <span class="week-badge" id="week-badge">Semana</span>
@@ -734,18 +654,15 @@
         <div class="indicators" id="indicators"></div>
       </div>
 
-      <!-- BODY -->
       <div class="carousel-body">
         <div class="territorio-badge" id="territorio-badge"></div>
         <h2 class="legenda" id="legenda"></h2>
         
         <div id="artes-count"></div>
 
-        <!-- LINKS CLICÁVEIS -->
         <div id="links-fotos-section" class="links-section"></div>
         <div id="links-ref-section" class="links-section"></div>
 
-        <!-- APPROVAL FORM -->
         <div class="approval-section">
           <label class="section-label">Avaliação</label>
 
@@ -767,7 +684,6 @@
           <button class="btn-submit" id="btn-submit" onclick="enviarAprovacao()">Enviar avaliação</button>
         </div>
 
-        <!-- COMMENTS LIST -->
         <div id="comments-list" class="comments-list"></div>
       </div>
     </div>
@@ -785,23 +701,6 @@
   let currentImageIdx = 0;
   let statusSelecionado = null;
 
-  // Converter URL do Drive para formato que funciona em <img>
-  function converterDriveURL(url) {
-    // Se já está no formato correto, retorna
-    if (url.includes('uc?export=download') || url.includes('uc?export=view')) {
-      return url;
-    }
-    
-    // Se está em /file/d/, extrai o ID
-    const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
-    if (match) {
-      const id = match[1];
-      // Usa export=download que funciona melhor para imagens
-      return `https://drive.google.com/uc?export=download&id=${id}`;
-    }
-    
-    return url;
-  }
   async function sbPost(path, body) {
     const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
       method: 'POST',
@@ -838,13 +737,11 @@
     });
   }
 
-  // ===== TRELLO =====
   async function trelloPost(path, params) {
     const url = `https://api.trello.com/1/${path}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&` + new URLSearchParams(params).toString();
     return fetch(url, { method: 'POST' }).then(r => r.json());
   }
 
-  // ===== SETUP SCREEN =====
   async function criarAprovacao() {
     const briefing = document.getElementById('briefing').value.trim();
     const semana = document.getElementById('semana').value;
@@ -885,7 +782,6 @@
       const linkAprovacao = `${baseUrl}?aprovacao=${aprovacaoId}`;
 
       alert('Link gerado! Abrindo em nova aba...');
-      // Abre em NOVA ABA
       window.open(linkAprovacao, '_blank');
     } catch (e) {
       console.error(e);
@@ -893,7 +789,6 @@
     }
   }
 
-  // ===== APPROVAL SCREEN =====
   async function carregarAprovacao() {
     const params = new URLSearchParams(window.location.search);
     const aprovacaoId = params.get('aprovacao');
@@ -930,7 +825,6 @@
         renderIndicadores();
       }
 
-      // Renderizar links de fotos
       if (aprovacao.links_fotos && aprovacao.links_fotos.length) {
         const fotosHtml = `
           <span class="links-label">Fotos de Referência</span>
@@ -946,7 +840,6 @@
         document.getElementById('links-fotos-section').innerHTML = fotosHtml;
       }
 
-      // Renderizar links de referência
       if (aprovacao.links_ref && aprovacao.links_ref.length) {
         const refHtml = `
           <span class="links-label">Referências e Pesquisa</span>
@@ -978,7 +871,7 @@
   }
 
   function renderCarrossel() {
-    const img = converterDriveURL(currentImages[currentImageIdx]);
+    const img = currentImages[currentImageIdx];
     document.getElementById('carousel-img').src = img;
 
     document.querySelectorAll('.indicator').forEach((el, i) => {
@@ -1037,7 +930,6 @@
     btn.textContent = 'Enviando...';
 
     try {
-      // Salva no Supabase
       await sbPost('comentarios_iplace', {
         aprovacao_id: currentAprovacaoId,
         nome_avaliador: nome,
@@ -1045,7 +937,6 @@
         comentario
       });
 
-      // Posta no Trello
       const aprovacao = await sbGet(`aprovacoes_iplace?id=eq.${currentAprovacaoId}&select=trello_card_id`);
       const trelloCardId = aprovacao?.[0]?.trello_card_id;
 
@@ -1055,14 +946,12 @@
         await trelloPost(`cards/${trelloCardId}/actions/comments`, { text: txtComentario });
       }
 
-      // Limpa form
       document.getElementById('aprovador-nome').value = '';
       document.getElementById('comentario').value = '';
       statusSelecionado = null;
       document.getElementById('btn-approve').classList.remove('active');
       document.getElementById('btn-revise').classList.remove('active');
 
-      // Recarrega comentários
       await carregarComentarios();
 
       btn.disabled = false;
@@ -1104,7 +993,6 @@
     }
   }
 
-  // Init
   carregarAprovacao();
 </script>
 
