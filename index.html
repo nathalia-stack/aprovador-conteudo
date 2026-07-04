@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aprovação de Conteúdo — Papa PPG</title>
+  <title>Aprovação iPlace — Papa PPG</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -13,400 +14,814 @@
       --surface: #FFFFFF;
       --ink: #1A1A18;
       --ink-light: #6B6B65;
-      --approve: #2D6A4F;
-      --approve-bg: #D8F3DC;
-      --revise: #9B2226;
-      --revise-bg: #FFE8E8;
-      --pending: #B5850A;
-      --pending-bg: #FFF3CD;
       --border: #E0DDD7;
       --radius: 12px;
+      --approve: #2D6A4F;
+      --approve-bg: #D8F3DC;
     }
 
-    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+    body { 
+      font-family: 'DM Sans', sans-serif; 
+      background: var(--bg); 
+      color: var(--ink); 
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
 
     .screen { display: none; }
     .screen.active { display: block; }
 
+    /* ===== SETUP SCREEN ===== */
     #setup-screen.active {
       min-height: 100vh;
-      display: flex; align-items: center; justify-content: center; padding: 40px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
     }
 
     .setup-card {
-      background: var(--surface); border-radius: 20px;
-      padding: 56px 48px; max-width: 600px; width: 100%;
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 48px;
+      max-width: 600px;
+      width: 100%;
       box-shadow: 0 4px 40px rgba(0,0,0,0.06);
+      border: 1.5px solid var(--border);
     }
 
-    .brand { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; color: var(--ink-light); text-transform: uppercase; margin-bottom: 16px; }
-    .setup-card h1 { font-family: 'DM Serif Display', serif; font-size: 2rem; line-height: 1.15; margin-bottom: 8px; }
-    .setup-card .subtitle { color: var(--ink-light); font-size: 0.95rem; margin-bottom: 40px; line-height: 1.5; }
+    .brand {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
 
-    .field-group { margin-bottom: 24px; }
-    label { display: block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 8px; }
+    .setup-card h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2rem;
+      line-height: 1.15;
+      margin-bottom: 8px;
+      color: var(--ink);
+    }
+
+    .setup-card .subtitle {
+      color: var(--ink-light);
+      font-size: 0.95rem;
+      margin-bottom: 40px;
+      line-height: 1.5;
+    }
+
+    .field-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: 8px;
+    }
 
     input, textarea, select {
-      width: 100%; padding: 14px 16px;
-      border: 1.5px solid var(--border); border-radius: var(--radius);
-      font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
-      color: var(--ink); background: var(--bg);
-      transition: border-color 0.2s; outline: none;
-      -webkit-appearance: none; appearance: none;
-    }
-    input:focus, textarea:focus, select:focus { border-color: var(--ink); }
-    textarea { resize: vertical; min-height: 80px; }
-
-    .hint { font-size: 0.78rem; color: var(--ink-light); margin-top: 6px; line-height: 1.4; }
-
-    .select-wrap { position: relative; }
-    .select-wrap::after {
-      content: '▾'; position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-      color: var(--ink-light); pointer-events: none; font-size: 1rem;
-    }
-    .select-wrap select { padding-right: 36px; cursor: pointer; }
-
-    .posts-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 16px; }
-
-    .post-item {
-      border: 1.5px solid var(--border); border-radius: var(--radius);
-      padding: 16px; background: var(--bg); position: relative;
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      background: var(--bg);
+      transition: border-color 0.2s;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
     }
 
-    .post-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-    .post-num { font-size: 0.78rem; font-weight: 600; color: var(--ink-light); text-transform: uppercase; letter-spacing: 0.08em; }
-
-    .btn-remove-post {
-      background: none; border: none; cursor: pointer;
-      color: var(--ink-light); font-size: 1.1rem; padding: 2px 6px;
-      border-radius: 6px; transition: all 0.2s;
-    }
-    .btn-remove-post:hover { background: var(--revise-bg); color: var(--revise); }
-
-    .post-item textarea { min-height: 70px; margin-bottom: 8px; font-size: 0.88rem; }
-    .post-item input { font-size: 0.88rem; margin-bottom: 8px; }
-    .post-type-label { font-size: 0.72rem; color: var(--ink-light); margin-top: 6px; }
-
-    .field-label-small {
-      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em;
-      text-transform: uppercase; color: var(--ink-light); margin-bottom: 4px; display: block;
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--ink);
     }
 
-    .btn-add-post {
-      width: 100%; padding: 12px;
-      background: transparent; border: 1.5px dashed var(--border);
-      border-radius: var(--radius); font-family: 'DM Sans', sans-serif;
-      font-size: 0.88rem; font-weight: 600; color: var(--ink-light);
-      cursor: pointer; transition: all 0.2s;
+    textarea {
+      resize: vertical;
+      min-height: 100px;
     }
-    .btn-add-post:hover { border-color: var(--ink); color: var(--ink); }
+
+    .hint {
+      font-size: 0.78rem;
+      color: var(--ink-light);
+      margin-top: 6px;
+      line-height: 1.4;
+    }
 
     .btn-primary {
-      width: 100%; padding: 16px;
-      background: var(--ink); color: #fff; border: none;
-      border-radius: var(--radius); font-family: 'DM Sans', sans-serif;
-      font-size: 1rem; font-weight: 600; cursor: pointer;
-      transition: opacity 0.2s; margin-top: 24px;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-    }
-    .btn-primary:hover { opacity: 0.85; }
-    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    #links-screen.active {
-      min-height: 100vh;
-      display: flex; align-items: center; justify-content: center; padding: 40px 20px;
-    }
-
-    .links-card {
-      background: var(--surface); border-radius: 20px;
-      padding: 48px; max-width: 620px; width: 100%;
-      box-shadow: 0 4px 40px rgba(0,0,0,0.06);
+      width: 100%;
+      padding: 16px;
+      background: var(--ink);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-top: 24px;
     }
 
-    .links-card h2 { font-family: 'DM Serif Display', serif; font-size: 1.6rem; margin-bottom: 8px; }
-    .links-card .sub { color: var(--ink-light); font-size: 0.9rem; margin-bottom: 32px; line-height: 1.5; }
-
-    .link-item {
-      border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 16px 18px; margin-bottom: 12px;
-      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    .btn-primary:hover {
+      opacity: 0.85;
     }
 
-    .link-info { flex: 1; min-width: 0; }
-    .link-title { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
-    .link-url { font-size: 0.78rem; color: var(--ink-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    .btn-copy-link {
-      padding: 8px 14px; background: var(--ink); color: #fff;
-      border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif;
-      font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s; white-space: nowrap;
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
-    .btn-copy-link:hover { opacity: 0.8; }
 
-    .btn-copy-all {
-      width: 100%; padding: 14px; margin-top: 8px;
-      background: transparent; border: 1.5px solid var(--ink);
-      border-radius: var(--radius); font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
-    }
-    .btn-copy-all:hover { background: var(--ink); color: #fff; }
-
-    .btn-nova-rodada {
-      width: 100%; padding: 14px; margin-top: 10px;
-      background: transparent; border: 1.5px solid var(--border);
-      border-radius: var(--radius); font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem; font-weight: 600; color: var(--ink-light);
-      cursor: pointer; transition: all 0.2s;
-    }
-    .btn-nova-rodada:hover { border-color: var(--ink); color: var(--ink); }
-
+    /* ===== TOPBAR ===== */
     .topbar {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(245,243,239,0.94); backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(245, 243, 239, 0.94);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
-      padding: 14px 32px;
-      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
     }
 
-    .topbar-left { display: flex; flex-direction: column; gap: 2px; }
-    .topbar-brand { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em; color: var(--ink-light); text-transform: uppercase; }
-    .topbar-title { font-family: 'DM Serif Display', serif; font-size: 1.05rem; }
-    .topbar-meta { font-size: 0.78rem; color: var(--ink-light); }
-    .topbar-contexto { font-size: 0.75rem; color: var(--ink-light); font-style: italic; margin-top: 1px; }
-
-    .progress-wrap { display: flex; align-items: center; gap: 12px; flex: 1; max-width: 280px; }
-    .progress-bar-bg { flex: 1; height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; }
-    .progress-bar-fill { height: 100%; background: var(--ink); border-radius: 99px; transition: width 0.4s ease; }
-    .progress-label { font-size: 0.78rem; color: var(--ink-light); white-space: nowrap; }
-
-    .cards-container { max-width: 680px; margin: 0 auto; padding: 48px 24px; display: flex; flex-direction: column; gap: 40px; }
-
-    .card {
-      background: var(--surface); border-radius: 20px; overflow: hidden;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.05); border: 1.5px solid var(--border);
-      animation: fadeUp 0.4s ease both;
+    .topbar-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
 
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-
-    .card-image-wrap {
-      position: relative; background: #F0EEE9;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .card-image-wrap img { width: 100%; max-height: 520px; object-fit: contain; display: block; }
-    .card-image-wrap iframe { display: block; border: none; width: 100%; height: 480px; background: #f0eee9; }
-
-    .card-num-badge {
-      position: absolute; top: 16px; left: 16px;
-      background: rgba(26,26,24,0.75); color: #fff;
-      font-size: 0.75rem; font-weight: 600; padding: 4px 10px;
-      border-radius: 99px; backdrop-filter: blur(4px); z-index: 2;
+    .topbar-brand {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--ink-light);
+      text-transform: uppercase;
     }
 
-    .carousel-stack { display: flex; flex-direction: column; }
-    .carousel-stack-header {
-      padding: 12px 16px; background: #f0eee9;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.78rem; font-weight: 600;
-      color: var(--ink-light); letter-spacing: 0.06em; text-transform: uppercase;
-    }
-    .carousel-arte {
-      position: relative; background: #f0eee9;
-      border-bottom: 1px solid var(--border);
-    }
-    .carousel-arte:last-child { border-bottom: none; }
-    .carousel-arte iframe {
-      display: block; border: none; width: 100%; height: 520px;
-      pointer-events: none;
-    }
-    .carousel-arte iframe.is-video { pointer-events: all; }
-    .carousel-arte img { width: 100%; max-height: 520px; object-fit: contain; display: block; }
-    .carousel-arte-badge {
-      position: absolute; top: 12px; left: 12px;
-      background: rgba(26,26,24,0.75); color: #fff;
-      font-size: 0.72rem; font-weight: 600; padding: 3px 8px;
-      border-radius: 99px; backdrop-filter: blur(4px); z-index: 2;
+    .topbar-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--ink);
     }
 
-    .card-video-wrap { position: relative; background: #0D0D0D; display: flex; align-items: center; justify-content: center; }
-    .card-video-wrap iframe { display: block; border: none; width: 100%; height: 420px; }
-
-    .card-body { padding: 24px 28px 28px; }
-    .card-legenda { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--ink); margin-bottom: 8px; line-height: 1.3; }
-    .card-descricao { font-size: 0.85rem; color: var(--ink-light); line-height: 1.6; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); white-space: pre-wrap; }
-
-    .respostas-anteriores { margin-bottom: 20px; }
-    .respostas-titulo { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 10px; }
-
-    .resposta-item {
-      display: flex; flex-direction: column; gap: 3px;
-      padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; font-size: 0.83rem;
+    .topbar-subtitle {
+      font-size: 0.75rem;
+      color: var(--ink-light);
+      letter-spacing: 0.04em;
     }
-    .resposta-item.aprovado { background: var(--approve-bg); }
-    .resposta-item.ajuste { background: var(--revise-bg); }
-    .resposta-nome { font-weight: 600; }
-    .resposta-comentario { color: var(--ink-light); font-size: 0.8rem; }
 
-    .aprovacao-form { border-top: 1px solid var(--border); padding-top: 20px; }
-    .aprovacao-titulo { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 14px; }
-    .aprovacao-form .field-group { margin-bottom: 12px; }
+    /* ===== APPROVAL SCREEN ===== */
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
 
-    .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-
-    .btn-action {
-      padding: 12px; border-radius: var(--radius); border: 1.5px solid var(--border);
-      font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600;
-      cursor: pointer; transition: all 0.2s;
-      display: flex; align-items: center; justify-content: center; gap: 6px;
+    .post-card {
       background: var(--surface);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.06);
+      border: 1.5px solid var(--border);
+      margin-bottom: 48px;
     }
-    .btn-approve { background: var(--approve-bg); border-color: var(--approve); color: var(--approve); }
-    .btn-approve:hover, .btn-approve.active { background: var(--approve); color: #fff; }
-    .btn-revise { background: var(--revise-bg); border-color: var(--revise); color: var(--revise); }
-    .btn-revise:hover, .btn-revise.active { background: var(--revise); color: #fff; }
 
-    .comment-wrap { margin-bottom: 10px; }
-    .comment-wrap textarea { background: var(--bg); font-size: 0.88rem; padding: 12px 14px; min-height: 70px; }
+    .carousel-image-container {
+      position: relative;
+      background: #F0EEE9;
+      aspect-ratio: 4 / 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .carousel-image-container img,
+    .carousel-image-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .nav-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(26, 26, 24, 0.5);
+      border: none;
+      color: white;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      z-index: 10;
+    }
+
+    .nav-button:hover {
+      background: rgba(26, 26, 24, 0.7);
+    }
+
+    .nav-button.prev {
+      left: 12px;
+    }
+
+    .nav-button.next {
+      right: 12px;
+    }
+
+    .indicators {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 10;
+    }
+
+    .indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .indicator.active {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .week-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(26, 26, 24, 0.75);
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 99px;
+      backdrop-filter: blur(4px);
+      z-index: 10;
+    }
+
+    .carousel-body {
+      padding: 24px 28px;
+    }
+
+    .legenda {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--ink);
+      margin-bottom: 16px;
+      line-height: 1.5;
+      font-weight: 400;
+    }
+
+    .territorio-badge {
+      font-size: 0.72rem;
+      color: var(--ink-light);
+      background: var(--bg);
+      padding: 4px 10px;
+      border-radius: var(--radius);
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
+    .descricao {
+      font-size: 0.85rem;
+      color: var(--ink-light);
+      line-height: 1.6;
+      margin-bottom: 16px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .territorio-badge {
+      font-size: 0.72rem;
+      color: var(--ink-light);
+      background: var(--bg);
+      padding: 4px 10px;
+      border-radius: var(--radius);
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
+    .briefing-box {
+      background: var(--bg);
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      border-left: 3px solid var(--ink);
+      margin-bottom: 20px;
+    }
+
+    .briefing-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: 4px;
+    }
+
+    .briefing-text {
+      font-size: 0.85rem;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    /* ===== APPROVAL FORM ===== */
+    .approval-section {
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .select-wrap {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .select-wrap::after {
+      content: '▾';
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--ink-light);
+      pointer-events: none;
+      font-size: 1rem;
+    }
+
+    .select-wrap select {
+      padding-right: 36px;
+      cursor: pointer;
+    }
+
+    .btn-approve {
+      width: 100%;
+      padding: 12px;
+      background: var(--approve-bg);
+      border: 1.5px solid var(--approve);
+      color: var(--approve);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 12px;
+    }
+
+    .btn-approve:hover,
+    .btn-approve.active {
+      background: var(--approve);
+      color: #fff;
+    }
+
+    .btn-revise {
+      width: 100%;
+      padding: 12px;
+      background: #FEF3E2;
+      border: 1.5px solid #D97706;
+      color: #D97706;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 12px;
+    }
+
+    .btn-revise:hover,
+    .btn-revise.active {
+      background: #D97706;
+      color: #fff;
+    }
+
+    .buttons-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .buttons-group button {
+      flex: 1;
+      padding: 12px;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid;
+      transition: all 0.2s;
+    }
+
+    .btn-approve-group {
+      background: var(--approve-bg);
+      border-color: var(--approve);
+      color: var(--approve);
+    }
+
+    .btn-approve-group:hover,
+    .btn-approve-group.active {
+      background: var(--approve);
+      color: #fff;
+    }
+
+    .btn-revise-group {
+      background: #FEF3E2;
+      border-color: #D97706;
+      color: #D97706;
+    }
+
+    .btn-revise-group:hover,
+    .btn-revise-group.active {
+      background: #D97706;
+      color: #fff;
+    }
+
+    .comment-textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      color: var(--ink);
+      background: var(--bg);
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 12px;
+    }
+
+    .comment-textarea:focus {
+      border-color: var(--ink);
+    }
 
     .btn-submit {
-      width: 100%; padding: 14px; background: var(--ink); color: #fff; border: none;
-      border-radius: var(--radius); font-family: 'DM Sans', sans-serif;
-      font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%;
+      padding: 14px;
+      background: var(--ink);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
     }
-    .btn-submit:hover { opacity: 0.85; }
-    .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    .loading-screen {
-      min-height: 60vh; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 16px;
-      color: var(--ink-light); font-size: 0.9rem;
+    .btn-submit:hover {
+      opacity: 0.85;
     }
-    .loading-spinner {
-      width: 32px; height: 32px; border: 3px solid var(--border);
-      border-top-color: var(--ink); border-radius: 50%; animation: spin 0.7s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
 
-    .expired-screen {
-      min-height: 60vh; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 12px; text-align: center; padding: 40px;
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
-    .expired-screen h2 { font-family: 'DM Serif Display', serif; font-size: 1.6rem; margin-bottom: 8px; }
-    .expired-screen p { color: var(--ink-light); font-size: 0.95rem; line-height: 1.6; }
 
-    .toast {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-      background: var(--ink); color: #fff; padding: 12px 24px;
-      border-radius: 99px; font-size: 0.88rem; font-weight: 600;
-      z-index: 300; opacity: 0; transition: opacity 0.3s;
-      pointer-events: none; white-space: nowrap;
+    /* ===== COMENTÁRIOS ===== */
+    .comments-list {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
     }
-    .toast.show { opacity: 1; }
+
+    .comment-item {
+      margin-bottom: 16px;
+      padding: 12px 14px;
+      background: var(--bg);
+      border-radius: var(--radius);
+    }
+
+    .comment-author {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .comment-status {
+      font-size: 0.72rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .comment-status-approve {
+      color: var(--approve);
+    }
+
+    .comment-status-revise {
+      color: #D97706;
+    }
+
+    .comment-text {
+      font-size: 0.85rem;
+      color: var(--ink-light);
+      line-height: 1.5;
+    }
+
+    .links-section {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .links-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .links-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .link-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: var(--bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .link-item:hover {
+      border-color: var(--ink);
+      background: var(--surface);
+    }
+
+    .link-icon {
+      font-size: 0.9rem;
+      color: var(--ink-light);
+    }
+
+    .link-item a {
+      flex: 1;
+      font-size: 0.85rem;
+      color: var(--ink);
+      text-decoration: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      word-break: break-all;
+    }
+
+    .link-item a:hover {
+      color: var(--approve);
+      text-decoration: underline;
+    }
+
+    /* ===== LOADING ===== */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+      gap: 12px;
+    }
 
     .spinner {
-      width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block;
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--ink);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
     }
 
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 600px) {
-      .setup-card, .links-card { padding: 32px 20px; }
-      .topbar { padding: 12px 16px; flex-wrap: wrap; }
-      .cards-container { padding: 24px 16px; }
-      .carousel-arte iframe { height: 360px; }
-      .card-image-wrap iframe { height: 360px; }
+      .setup-card { padding: 32px 20px; }
+      .container { padding: 24px 16px; }
     }
   </style>
 </head>
 <body>
 
+<!-- SETUP SCREEN -->
 <div id="setup-screen" class="screen active">
   <div class="setup-card">
     <p class="brand">Papa PPG</p>
-    <h1>Aprovação de<br>Conteúdo</h1>
-    <p class="subtitle">Crie uma rodada de aprovação. Cada post gera um link individual — válido por 7 dias.</p>
+    <h1>Aprovação<br>iPlace × Apple</h1>
+    <p class="subtitle">Preencha os dados do carrossel e gere o link de aprovação.</p>
 
     <div class="field-group">
-      <label>Nome da rodada</label>
-      <input type="text" id="round-name" placeholder="Ex: iPlace — Semana 18" />
+      <label>Briefing</label>
+      <textarea id="briefing" placeholder="Cole o briefing completo do post..."></textarea>
+      <p class="hint">Será visível na aprovação para contexto.</p>
     </div>
 
     <div class="field-group">
-      <label>Aprovadores</label>
-      <input type="text" id="aprovadores" placeholder="Ex: Nicholas, Mabi, Nath" />
-      <p class="hint">Separe os nomes por vírgula. Eles vão aparecer num menu para o cliente selecionar quem está aprovando.</p>
+      <label>Semana</label>
+      <div class="select-wrap">
+        <select id="semana">
+          <option value="">Selecione a semana</option>
+          <option value="3">Semana 3</option>
+          <option value="4">Semana 4</option>
+        </select>
+      </div>
     </div>
 
     <div class="field-group">
-      <label>Posts para aprovação</label>
-      <div class="posts-list" id="posts-list"></div>
-      <button class="btn-add-post" onclick="addPost()">+ Adicionar post</button>
-      <p class="hint" style="margin-top:10px;">Para carrossel, cole múltiplos links do Drive — um por linha. As artes aparecem empilhadas na ordem que você colocar.</p>
+      <label>Qual é o Território?</label>
+      <div class="select-wrap">
+        <select id="territorio">
+          <option value="">Selecione o território</option>
+          <option value="Criação">Criação — Design, fotografia, criatividade visual</option>
+          <option value="Profissional">Profissional — Produtividade, trabalho, negócios</option>
+          <option value="Saúde & Performance">Saúde & Performance — Bem-estar, fitness, saúde</option>
+        </select>
+      </div>
+      <p class="hint">Cada território tem seu próprio público e linguagem</p>
     </div>
 
-    <button class="btn-primary" id="btn-criar" onclick="criarRodada()">
-      Criar rodada e gerar links →
-    </button>
+    <div class="field-group">
+      <label>Links do Google Drive — Artes do Carrossel (um por linha)</label>
+      <textarea id="links-drive" placeholder="https://drive.google.com/uc?export=view&id=...&#10;https://drive.google.com/uc?export=view&id=..."></textarea>
+      <p class="hint">Imagens ou vídeos que compõem o carrossel. Um link por linha.</p>
+    </div>
+
+    <div class="field-group">
+      <label>Links de Fotos — Referências Visuais (um por linha)</label>
+      <textarea id="links-fotos" placeholder="https://...&#10;https://..."></textarea>
+      <p class="hint">Imagens de referência ou contexto visual (opcional).</p>
+    </div>
+
+    <div class="field-group">
+      <label>Links de Referência — Pesquisa e Fontes (um por linha)</label>
+      <textarea id="links-ref" placeholder="https://...&#10;https://..."></textarea>
+      <p class="hint">Links de pesquisa, artigos, ou fontes (opcional).</p>
+    </div>
+
+    <div class="field-group">
+      <label>ID do Card Trello</label>
+      <input type="text" id="trello-card-id" placeholder="Ex: abc123def456" />
+      <p class="hint">Os comentários aparecerão neste card.</p>
+    </div>
+
+    <button class="btn-primary" onclick="criarAprovacao()">Gerar link de aprovação →</button>
   </div>
 </div>
 
-<div id="links-screen" class="screen">
-  <div class="links-card">
-    <p class="brand">Papa PPG</p>
-    <h2>Links gerados!</h2>
-    <p class="sub">Cada link leva diretamente ao post. Compartilhe com o cliente.</p>
-    <div id="links-list"></div>
-    <button class="btn-copy-all" onclick="copiarTodosLinks()">Copiar todos os links para WhatsApp</button>
-    <button class="btn-nova-rodada" onclick="novaRodada()">+ Criar nova rodada</button>
-  </div>
-</div>
-
-<div id="review-screen" class="screen">
+<!-- APPROVAL SCREEN -->
+<div id="approval-screen" class="screen">
   <div class="topbar">
     <div class="topbar-left">
       <span class="topbar-brand">Papa PPG</span>
-      <span class="topbar-title" id="topbar-title">—</span>
-      <span class="topbar-meta" id="topbar-meta">—</span>
-      <span class="topbar-contexto" id="topbar-contexto" style="display:none;"></span>
-    </div>
-    <div class="progress-wrap">
-      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
-      <span class="progress-label" id="progress-label">—</span>
+      <span class="topbar-title" id="topbar-title">Aprovação de Conteúdo</span>
+      <span class="topbar-subtitle" id="topbar-subtitle">—</span>
     </div>
   </div>
-  <div class="cards-container" id="cards-container"></div>
+
+  <div class="container">
+    <div class="post-card">
+      <!-- CARROSSEL -->
+      <div class="carousel-image-container" id="carousel-container">
+        <img id="carousel-img" src="" alt="Conteúdo" />
+        <span class="week-badge" id="week-badge">Semana</span>
+        <button class="nav-button prev" id="btn-prev" onclick="prevImage()">‹</button>
+        <button class="nav-button next" id="btn-next" onclick="nextImage()">›</button>
+        <div class="indicators" id="indicators"></div>
+      </div>
+
+      <!-- BODY -->
+      <div class="carousel-body">
+        <div class="territorio-badge" id="territorio-badge"></div>
+        <h2 class="legenda" id="legenda"></h2>
+        
+        <div id="artes-count"></div>
+
+        <!-- LINKS CLICÁVEIS -->
+        <div id="links-fotos-section" class="links-section"></div>
+        <div id="links-ref-section" class="links-section"></div>
+
+        <!-- APPROVAL FORM -->
+        <div class="approval-section">
+          <label class="section-label">Avaliação</label>
+
+          <div class="select-wrap">
+            <select id="aprovador-nome">
+              <option value="">Selecione quem está avaliando</option>
+              <option value="Bianca">Bianca</option>
+              <option value="Juliana">Juliana</option>
+            </select>
+          </div>
+
+          <div class="buttons-group">
+            <button class="btn-approve-group" id="btn-approve" onclick="marcarAprovado()">Aprovar</button>
+            <button class="btn-revise-group" id="btn-revise" onclick="marcarRevise()">Pedir Ajustes</button>
+          </div>
+
+          <textarea id="comentario" class="comment-textarea" placeholder="Deixe seu comentário ou feedback..."></textarea>
+
+          <button class="btn-submit" id="btn-submit" onclick="enviarAprovacao()">Enviar avaliação</button>
+        </div>
+
+        <!-- COMMENTS LIST -->
+        <div id="comments-list" class="comments-list"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="toast" id="toast"></div>
-
 <script>
-  const SUPABASE_URL = 'https://mmoobojkoiwjgitydyry.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_9q4OZ91o2dr2ISnjQrzQeg_rpm3auxW';
-  const TRELLO_KEY   = 'da9f3be1b58b680abb390273e25f0ab3';
+  const SUPABASE_URL = 'https://dgqzyfdktutbirpnydjq.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRncXp5ZmRrdHV0YmlycG55ZGpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwNTA5MzgsImV4cCI6MjA5ODYyNjkzOH0.Ia-QWa_yaZoTnWLIyOk4A8dxBlteIyfJcJH21nirBOA';
+  const TRELLO_KEY = 'da9f3be1b58b680abb390273e25f0ab3';
   const TRELLO_TOKEN = 'ATTA8db72e7429e32ad87b75510e20cc93faaec65360cafa7fd5f3146f3c8f9a7f3b73A1CE9D';
-  const TRELLO_LISTA_AGUARDANDO = '69f0841fe3d90846c59a3171';
-  const TRELLO_LISTA_APROVADO   = '69f08422704aa2638127c3ad';
-  const TRELLO_LISTA_AJUSTE     = '69f0842c566abb919b9fa2e2';
 
-  let postCount = 0;
+  let currentAprovacaoId = null;
+  let currentImages = [];
+  let currentImageIdx = 0;
   let statusSelecionado = null;
-  window._linksGerados = null;
 
-  async function sbGet(path) {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-    });
-    return r.json();
+  // Converter URL do Drive para formato que funciona em <img>
+  function converterDriveURL(url) {
+    // Se já está no formato correto, retorna
+    if (url.includes('uc?export=download') || url.includes('uc?export=view')) {
+      return url;
+    }
+    
+    // Se está em /file/d/, extrai o ID
+    const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    if (match) {
+      const id = match[1];
+      // Usa export=download que funciona melhor para imagens
+      return `https://drive.google.com/uc?export=download&id=${id}`;
+    }
+    
+    return url;
   }
-
   async function sbPost(path, body) {
     const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
       method: 'POST',
       headers: {
-        'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json', 'Prefer': 'return=representation'
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
       },
       body: JSON.stringify(body)
+    });
+    return r.json();
+  }
+
+  async function sbGet(path) {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
     });
     return r.json();
   }
@@ -415,444 +830,283 @@
     await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
       method: 'PATCH',
       headers: {
-        'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(body)
     });
   }
 
+  // ===== TRELLO =====
   async function trelloPost(path, params) {
     const url = `https://api.trello.com/1/${path}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&` + new URLSearchParams(params).toString();
-    const r = await fetch(url, { method: 'POST' });
-    return r.json();
+    return fetch(url, { method: 'POST' }).then(r => r.json());
   }
 
-  async function trelloPut(path, params) {
-    const url = `https://api.trello.com/1/${path}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&` + new URLSearchParams(params).toString();
-    return fetch(url, { method: 'PUT' });
-  }
+  // ===== SETUP SCREEN =====
+  async function criarAprovacao() {
+    const briefing = document.getElementById('briefing').value.trim();
+    const semana = document.getElementById('semana').value;
+    const territorio = document.getElementById('territorio').value;
+    const linksRaw = document.getElementById('links-drive').value.trim();
+    const linksPhotos = document.getElementById('links-fotos').value.trim();
+    const linksRef = document.getElementById('links-ref').value.trim();
+    const trelloCardId = document.getElementById('trello-card-id').value.trim();
 
-  function showToast(msg, duration = 2500) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), duration);
-  }
-
-  function addPost() {
-    postCount++;
-    const list = document.getElementById('posts-list');
-    const div = document.createElement('div');
-    div.className = 'post-item';
-    div.id = `post-item-${postCount}`;
-    div.innerHTML = `
-      <div class="post-item-header">
-        <span class="post-num">Post ${postCount}</span>
-        <button class="btn-remove-post" onclick="removePost(${postCount})">✕</button>
-      </div>
-      <span class="field-label-small">Links do Drive (um por linha)</span>
-      <textarea id="links-${postCount}" placeholder="Cole os links aqui&#10;Um por linha&#10;Para carrossel: múltiplos links" oninput="detectType(${postCount})" style="margin-bottom:12px;"></textarea>
-      <span class="field-label-small">Título curto (aparece na barra superior — só você vê)</span>
-      <input type="text" id="legenda-${postCount}" placeholder="Ex: Modo Cinema no iPhone" style="margin-bottom:10px;" />
-      <span class="field-label-small">Contexto interno (aparece na barra superior — só você vê)</span>
-      <input type="text" id="contexto-${postCount}" placeholder="Ex: Território Criação · Carrossel · Hub Cinema" style="margin-bottom:10px;" />
-      <span class="field-label-small">Legenda do post (o cliente vê — aparece abaixo da arte)</span>
-      <textarea id="descricao-${postCount}" placeholder="Cole aqui a legenda completa do post" style="min-height:80px;margin-bottom:10px;font-size:0.88rem;"></textarea>
-      <span class="field-label-small">Link do card no Trello (opcional)</span>
-      <input type="text" id="trello-link-${postCount}" placeholder="https://trello.com/c/XXXXX" style="margin-bottom:0;" />
-      <p class="post-type-label" id="type-label-${postCount}">📎 Post único</p>
-    `;
-    list.appendChild(div);
-  }
-
-  function removePost(num) {
-    const el = document.getElementById(`post-item-${num}`);
-    if (el) el.remove();
-  }
-
-  function detectType(num) {
-    const val = document.getElementById(`links-${num}`)?.value.trim() || '';
-    const lines = val.split('\n').filter(l => l.trim());
-    const label = document.getElementById(`type-label-${num}`);
-    if (label) label.textContent = lines.length > 1 ? `🎠 Carrossel (${lines.length} slides)` : '📎 Post único';
-  }
-
-  addPost();
-
-  async function criarRodada() {
-    const nome = document.getElementById('round-name').value.trim();
-    if (!nome) { showToast('Dê um nome para a rodada'); return; }
-
-    const aprovadoresRaw = document.getElementById('aprovadores').value.trim();
-    const aprovadores = aprovadoresRaw ? aprovadoresRaw.split(',').map(a => a.trim()).filter(Boolean) : [];
-
-    const items = document.querySelectorAll('.post-item');
-    const posts = [];
-
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
-      const id = item.id.replace('post-item-', '');
-      const linksRaw = document.getElementById(`links-${id}`)?.value.trim();
-      if (!linksRaw) continue;
-      const imagens = linksRaw.split('\n').map(l => l.trim()).filter(Boolean);
-      const legenda = document.getElementById(`legenda-${id}`)?.value.trim() || '';
-      const contexto = document.getElementById(`contexto-${id}`)?.value.trim() || '';
-      const descricao = document.getElementById(`descricao-${id}`)?.value.trim() || '';
-      const trelloLink = document.getElementById(`trello-link-${id}`)?.value.trim() || '';
-      posts.push({ ordem: posts.length + 1, imagens, legenda, contexto, descricao, trelloLink });
+    if (!briefing || !semana || !territorio || !linksRaw || !trelloCardId) {
+      alert('Preencha todos os campos obrigatórios');
+      return;
     }
 
-    if (!posts.length) { showToast('Adicione pelo menos um post com link'); return; }
+    const imagens = linksRaw.split('\n').map(l => l.trim()).filter(Boolean);
+    if (!imagens.length) {
+      alert('Adicione pelo menos um link');
+      return;
+    }
 
-    const btn = document.getElementById('btn-criar');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Criando rodada...';
+    const expiraEm = new Date();
+    expiraEm.setDate(expiraEm.getDate() + 365);
 
     try {
-      const rodadaRes = await sbPost('rodadas', { nome });
-      const rodada = Array.isArray(rodadaRes) ? rodadaRes[0] : rodadaRes;
-      if (!rodada?.id) throw new Error('Falha ao criar rodada. Verifique o Supabase.');
+      const res = await sbPost('aprovacoes_iplace', {
+        briefing,
+        semana,
+        territorio,
+        imagens,
+        links_fotos: linksPhotos ? linksPhotos.split('\n').map(l => l.trim()).filter(Boolean) : [],
+        links_ref: linksRef ? linksRef.split('\n').map(l => l.trim()).filter(Boolean) : [],
+        trello_card_id: trelloCardId,
+        expira_em: expiraEm.toISOString()
+      });
 
-      const linksGerados = [];
+      const aprovacaoId = Array.isArray(res) ? res[0].id : res.id;
       const baseUrl = window.location.origin + window.location.pathname;
+      const linkAprovacao = `${baseUrl}?aprovacao=${aprovacaoId}`;
 
-      // Codifica aprovadores na URL
-      const aprovadoresParam = aprovadores.length ? '&ap=' + encodeURIComponent(aprovadores.join(',')) : '';
-
-      for (const post of posts) {
-        const postRes = await sbPost('posts', {
-          rodada_id: rodada.id,
-          ordem: post.ordem,
-          imagens: post.imagens,
-          legenda: post.legenda,
-          descricao: post.descricao + (post.contexto ? '\n__contexto__' + post.contexto : '')
-        });
-        const postCriado = Array.isArray(postRes) ? postRes[0] : postRes;
-        if (!postCriado?.id) continue;
-
-        const linkPost = `${baseUrl}?post=${postCriado.id}${aprovadoresParam}`;
-        const nomeCard = `${nome} — Post ${post.ordem}${post.legenda ? ': ' + post.legenda.substring(0, 40) : ''}`;
-
-        try {
-          let trelloCardId = null;
-          if (post.trelloLink) {
-            const m = post.trelloLink.match(/trello\.com\/c\/([a-zA-Z0-9]+)/);
-            if (m) {
-              const cardInfo = await fetch(`https://api.trello.com/1/cards/${m[1]}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`).then(r => r.json());
-              if (cardInfo?.id) trelloCardId = cardInfo.id;
-            }
-          }
-          if (!trelloCardId) {
-            const trelloCard = await trelloPost('cards', {
-              idList: TRELLO_LISTA_AGUARDANDO,
-              name: nomeCard,
-              desc: `🔗 Link de aprovação: ${linkPost}\n\n${post.descricao ? '📝 ' + post.descricao + '\n\n' : ''}📎 ${post.imagens.length > 1 ? 'Carrossel com ' + post.imagens.length + ' slides' : 'Post único'}`
-            });
-            if (trelloCard?.id) trelloCardId = trelloCard.id;
-          }
-          if (trelloCardId) {
-            await sbPatch(`posts?id=eq.${postCriado.id}`, { trello_card_id: trelloCardId });
-          }
-        } catch (te) {
-          console.warn('Trello error:', te);
-        }
-
-        linksGerados.push({
-          titulo: `Post ${post.ordem}${post.legenda ? ' — ' + post.legenda.substring(0, 40) : ''}`,
-          url: linkPost
-        });
-      }
-
-      mostrarLinks(nome, linksGerados);
-
+      alert('Link gerado! Abrindo em nova aba...');
+      // Abre em NOVA ABA
+      window.open(linkAprovacao, '_blank');
     } catch (e) {
       console.error(e);
-      showToast('Erro: ' + e.message);
-      btn.disabled = false;
-      btn.innerHTML = 'Criar rodada e gerar links →';
+      alert('Erro ao criar: ' + e.message);
     }
   }
 
-  function mostrarLinks(nome, links) {
+  // ===== APPROVAL SCREEN =====
+  async function carregarAprovacao() {
+    const params = new URLSearchParams(window.location.search);
+    const aprovacaoId = params.get('aprovacao');
+
+    if (!aprovacaoId) return;
+
     document.getElementById('setup-screen').classList.remove('active');
-    document.getElementById('links-screen').classList.add('active');
-    const list = document.getElementById('links-list');
-    list.innerHTML = '';
-    links.forEach(link => {
-      const div = document.createElement('div');
-      div.className = 'link-item';
-      div.innerHTML = `
-        <div class="link-info">
-          <div class="link-title">${link.titulo}</div>
-          <div class="link-url">${link.url}</div>
-        </div>
-        <button class="btn-copy-link" onclick="copiarLink('${link.url}', this)">Copiar</button>
-      `;
-      list.appendChild(div);
-    });
-    window._linksGerados = { nome, links };
-  }
-
-  function copiarLink(url, btn) {
-    navigator.clipboard.writeText(url).then(() => {
-      const orig = btn.textContent;
-      btn.textContent = '✓ Copiado';
-      setTimeout(() => btn.textContent = orig, 2000);
-    });
-  }
-
-  function copiarTodosLinks() {
-    const d = window._linksGerados;
-    if (!d) return;
-    let text = `*${d.nome} — Links de aprovação*\n\n`;
-    d.links.forEach(l => { text += `📎 *${l.titulo}*\n${l.url}\n\n`; });
-    navigator.clipboard.writeText(text.trim()).then(() => showToast('Links copiados!'));
-  }
-
-  function novaRodada() {
-    document.getElementById('links-screen').classList.remove('active');
-    document.getElementById('setup-screen').classList.add('active');
-    document.getElementById('round-name').value = '';
-    document.getElementById('aprovadores').value = '';
-    document.getElementById('posts-list').innerHTML = '';
-    postCount = 0;
-    addPost();
-    window._linksGerados = null;
-    const btn = document.getElementById('btn-criar');
-    btn.disabled = false;
-    btn.innerHTML = 'Criar rodada e gerar links →';
-  }
-
-  async function carregarPost(postId) {
-    document.getElementById('setup-screen').classList.remove('active');
-    document.getElementById('review-screen').classList.add('active');
-    document.getElementById('cards-container').innerHTML = `
-      <div class="loading-screen"><div class="loading-spinner"></div><p>Carregando...</p></div>
-    `;
-
-    // Pegar aprovadores da URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const aprovadoresParam = urlParams.get('ap');
-    const aprovadores = aprovadoresParam ? decodeURIComponent(aprovadoresParam).split(',').map(a => a.trim()).filter(Boolean) : [];
+    document.getElementById('approval-screen').classList.add('active');
 
     try {
-      const posts = await sbGet(`posts?id=eq.${postId}&select=*`);
-      const post = posts?.[0];
-      if (!post) throw new Error('Post não encontrado');
+      const res = await sbGet(`aprovacoes_iplace?id=eq.${aprovacaoId}&select=*`);
+      const aprovacao = res?.[0];
 
-      const rodadas = await sbGet(`rodadas?id=eq.${post.rodada_id}&select=*`);
-      const rodada = rodadas?.[0];
-      if (!rodada) throw new Error('Rodada não encontrada');
-
-      if (new Date(rodada.expira_em) < new Date()) {
-        document.getElementById('cards-container').innerHTML = `
-          <div class="expired-screen"><h2>Este link expirou</h2><p>O período de aprovação de 7 dias encerrou.<br>Entre em contato com a Papa PPG.</p></div>
-        `;
+      if (!aprovacao) {
+        document.querySelector('.container').innerHTML = '<p>Aprovação não encontrada.</p>';
         return;
       }
 
-      const aprovacoes = await sbGet(`aprovacoes?post_id=eq.${postId}&select=*&order=criado_em.asc`);
-
-      let descricaoReal = post.descricao || '';
-      let contextoReal = '';
-      if (descricaoReal.includes('\n__contexto__')) {
-        const parts = descricaoReal.split('\n__contexto__');
-        descricaoReal = parts[0].trim();
-        contextoReal = parts[1]?.trim() || '';
+      if (new Date(aprovacao.expira_em) < new Date()) {
+        document.querySelector('.container').innerHTML = '<p>Este link expirou.</p>';
+        return;
       }
 
-      document.getElementById('topbar-title').textContent = rodada.nome;
-      document.getElementById('topbar-meta').textContent = `Post ${post.ordem}${post.legenda ? ' — ' + post.legenda : ''}`;
-      const ctxEl = document.getElementById('topbar-contexto');
-      if (ctxEl) { ctxEl.textContent = contextoReal; ctxEl.style.display = contextoReal ? 'block' : 'none'; }
-      atualizarProgresso(aprovacoes.length);
-      renderizarPost(post, aprovacoes || [], descricaoReal, aprovadores);
+      currentAprovacaoId = aprovacaoId;
+      currentImages = aprovacao.imagens || [];
 
+      document.getElementById('topbar-subtitle').textContent = `Semana ${aprovacao.semana}`;
+      document.getElementById('territorio-badge').textContent = aprovacao.territorio;
+      document.getElementById('legenda').textContent = aprovacao.briefing;
+      document.getElementById('week-badge').textContent = `Semana ${aprovacao.semana}`;
+
+      if (currentImages.length > 1) {
+        document.getElementById('artes-count').innerHTML = `<div style="font-size: 0.78rem; color: var(--ink-light); margin-bottom: 16px;">${currentImages.length} artes</div>`;
+        renderIndicadores();
+      }
+
+      // Renderizar links de fotos
+      if (aprovacao.links_fotos && aprovacao.links_fotos.length) {
+        const fotosHtml = `
+          <span class="links-label">Fotos de Referência</span>
+          <div class="links-list">
+            ${aprovacao.links_fotos.map(link => `
+              <div class="link-item">
+                <span class="link-icon">🔗</span>
+                <a href="${link}" target="_blank">${link}</a>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        document.getElementById('links-fotos-section').innerHTML = fotosHtml;
+      }
+
+      // Renderizar links de referência
+      if (aprovacao.links_ref && aprovacao.links_ref.length) {
+        const refHtml = `
+          <span class="links-label">Referências e Pesquisa</span>
+          <div class="links-list">
+            ${aprovacao.links_ref.map(link => `
+              <div class="link-item">
+                <span class="link-icon">📖</span>
+                <a href="${link}" target="_blank">${link}</a>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        document.getElementById('links-ref-section').innerHTML = refHtml;
+      }
+
+      renderCarrossel();
+      carregarComentarios();
     } catch (e) {
       console.error(e);
-      document.getElementById('cards-container').innerHTML = `
-        <div class="expired-screen"><h2>Algo deu errado</h2><p>${e.message}</p></div>
-      `;
+      document.querySelector('.container').innerHTML = '<p>Erro ao carregar: ' + e.message + '</p>';
     }
   }
 
-  function atualizarProgresso(total) {
-    document.getElementById('progress-label').textContent = total + ' resposta' + (total !== 1 ? 's' : '');
-    document.getElementById('progress-fill').style.width = total > 0 ? '100%' : '10%';
+  function renderIndicadores() {
+    const html = currentImages.map((_, i) => `
+      <button class="indicator ${i === 0 ? 'active' : ''}" onclick="goToImage(${i})"></button>
+    `).join('');
+    document.getElementById('indicators').innerHTML = html;
   }
 
-  function renderizarPost(post, aprovacoes, descricaoReal, aprovadores) {
-    const isCarrossel = post.imagens.length > 1;
-    const imageHtml = isCarrossel ? renderCarrossel(post.imagens) : renderImagem(post.imagens[0]);
+  function renderCarrossel() {
+    const img = converterDriveURL(currentImages[currentImageIdx]);
+    document.getElementById('carousel-img').src = img;
 
-    const respostasHtml = aprovacoes.length > 0 ? `
-      <div class="respostas-anteriores">
-        <p class="respostas-titulo">Respostas (${aprovacoes.length})</p>
-        ${aprovacoes.map(a => `
-          <div class="resposta-item ${a.status}">
-            <div class="resposta-nome">${a.nome_revisor} — ${a.status === 'aprovado' ? '✓ Aprovado' : '✎ Pedir ajuste'}</div>
-            ${a.comentario ? `<div class="resposta-comentario">💬 ${a.comentario}</div>` : ''}
-          </div>
-        `).join('')}
-      </div>
-    ` : '';
+    document.querySelectorAll('.indicator').forEach((el, i) => {
+      el.classList.toggle('active', i === currentImageIdx);
+    });
 
-    // Campo de seleção de nome
-    let nomeFieldHtml = '';
-    if (aprovadores.length > 0) {
-      const options = aprovadores.map(a => `<option value="${a}">${a}</option>`).join('');
-      nomeFieldHtml = `
-        <div class="field-group">
-          <div class="select-wrap">
-            <select id="nome-revisor">
-              <option value="">Selecione seu nome...</option>
-              ${options}
-            </select>
-          </div>
-        </div>`;
-    } else {
-      nomeFieldHtml = `
-        <div class="field-group">
-          <input type="text" id="nome-revisor" placeholder="Seu nome" />
-        </div>`;
-    }
-
-    document.getElementById('cards-container').innerHTML = `
-      <div class="card">
-        ${imageHtml}
-        <div class="card-body">
-          ${post.legenda ? `<div class="card-legenda">${post.legenda}</div>` : ''}
-          ${descricaoReal ? `<div class="card-descricao">${descricaoReal}</div>` : ''}
-          ${respostasHtml}
-          <div class="aprovacao-form">
-            <p class="aprovacao-titulo">Sua avaliação</p>
-            ${nomeFieldHtml}
-            <div class="action-row">
-              <button class="btn-action btn-approve" id="btn-approve" onclick="selecionarStatus('aprovado')">✓ Aprovado</button>
-              <button class="btn-action btn-revise" id="btn-revise" onclick="selecionarStatus('ajuste')">✎ Pedir ajuste</button>
-            </div>
-            <div class="comment-wrap">
-              <textarea id="comentario" placeholder="Comentário (opcional)..."></textarea>
-            </div>
-            <button class="btn-submit" id="btn-submit" onclick="enviarAprovacao('${post.id}', '${post.trello_card_id || ''}')">Enviar avaliação</button>
-          </div>
-        </div>
-      </div>
-    `;
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    btnPrev.style.display = currentImages.length > 1 ? 'flex' : 'none';
+    btnNext.style.display = currentImages.length > 1 ? 'flex' : 'none';
   }
 
-  function selecionarStatus(status) {
-    statusSelecionado = status;
-    document.getElementById('btn-approve').classList.toggle('active', status === 'aprovado');
-    document.getElementById('btn-revise').classList.toggle('active', status === 'ajuste');
+  function nextImage() {
+    currentImageIdx = (currentImageIdx + 1) % currentImages.length;
+    renderCarrossel();
   }
 
-  async function enviarAprovacao(postId, trelloCardId) {
-    const nomeEl = document.getElementById('nome-revisor');
-    const nome = nomeEl?.value?.trim();
+  function prevImage() {
+    currentImageIdx = (currentImageIdx - 1 + currentImages.length) % currentImages.length;
+    renderCarrossel();
+  }
+
+  function goToImage(idx) {
+    currentImageIdx = idx;
+    renderCarrossel();
+  }
+
+  function marcarAprovado() {
+    statusSelecionado = statusSelecionado === 'aprovado' ? null : 'aprovado';
+    document.getElementById('btn-approve').classList.toggle('active', statusSelecionado === 'aprovado');
+    document.getElementById('btn-revise').classList.remove('active');
+  }
+
+  function marcarRevise() {
+    statusSelecionado = statusSelecionado === 'ajustes' ? null : 'ajustes';
+    document.getElementById('btn-revise').classList.toggle('active', statusSelecionado === 'ajustes');
+    document.getElementById('btn-approve').classList.remove('active');
+  }
+
+  async function enviarAprovacao() {
+    const nome = document.getElementById('aprovador-nome').value;
     const comentario = document.getElementById('comentario').value.trim();
-    if (!nome) { showToast('Selecione ou digite seu nome antes de enviar'); return; }
-    if (!statusSelecionado) { showToast('Selecione Aprovado ou Pedir ajuste'); return; }
+
+    if (!nome) {
+      alert('Selecione quem está avaliando');
+      return;
+    }
+
+    if (!statusSelecionado) {
+      alert('Selecione "Aprovar" ou "Pedir Ajustes"');
+      return;
+    }
 
     const btn = document.getElementById('btn-submit');
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Enviando...';
+    btn.textContent = 'Enviando...';
 
     try {
-      await sbPost('aprovacoes', { post_id: postId, nome_revisor: nome, status: statusSelecionado, comentario });
+      // Salva no Supabase
+      await sbPost('comentarios_iplace', {
+        aprovacao_id: currentAprovacaoId,
+        nome_avaliador: nome,
+        status: statusSelecionado,
+        comentario
+      });
+
+      // Posta no Trello
+      const aprovacao = await sbGet(`aprovacoes_iplace?id=eq.${currentAprovacaoId}&select=trello_card_id`);
+      const trelloCardId = aprovacao?.[0]?.trello_card_id;
 
       if (trelloCardId) {
-        const listaDestino = statusSelecionado === 'aprovado' ? TRELLO_LISTA_APROVADO : TRELLO_LISTA_AJUSTE;
-        await trelloPut(`cards/${trelloCardId}`, { idList: listaDestino });
-        const txtComentario = `*${nome}* marcou como *${statusSelecionado === 'aprovado' ? '✅ Aprovado' : '✎ Ajuste solicitado'}*${comentario ? '\n\n💬 ' + comentario : ''}`;
+        const statusTxt = statusSelecionado === 'aprovado' ? '✓ Aprovado' : '⚠ Pedir Ajustes';
+        const txtComentario = `**${nome}** - ${statusTxt}${comentario ? '\n\n' + comentario : ''}`;
         await trelloPost(`cards/${trelloCardId}/actions/comments`, { text: txtComentario });
       }
 
-      showToast('Avaliação enviada! Obrigado.', 3000);
-      setTimeout(() => carregarPost(postId), 1800);
+      // Limpa form
+      document.getElementById('aprovador-nome').value = '';
+      document.getElementById('comentario').value = '';
+      statusSelecionado = null;
+      document.getElementById('btn-approve').classList.remove('active');
+      document.getElementById('btn-revise').classList.remove('active');
 
+      // Recarrega comentários
+      await carregarComentarios();
+
+      btn.disabled = false;
+      btn.textContent = 'Enviar avaliação';
     } catch (e) {
       console.error(e);
-      showToast('Erro ao enviar. Tente novamente.');
+      alert('Erro: ' + e.message);
       btn.disabled = false;
-      btn.innerHTML = 'Enviar avaliação';
+      btn.textContent = 'Enviar avaliação';
     }
   }
 
-  function extractDriveId(url) {
-    const m = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) ||
-              url.match(/\/d\/([a-zA-Z0-9_-]+)/) ||
-              url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-    return m ? m[1] : null;
-  }
+  async function carregarComentarios() {
+    try {
+      const res = await sbGet(`comentarios_iplace?aprovacao_id=eq.${currentAprovacaoId}&order=criado_em.asc&select=*`);
+      const comentarios = res || [];
 
-  function isDriveLink(url) { return url.includes('drive.google.com'); }
-  function isVideoLink(url) { return url.endsWith('#video') || /\.(mp4|mov|webm|ogg)(\?|$)/i.test(url); }
-  function cleanUrl(url) { return url.replace(/#video$/, ''); }
-
-  function renderImagem(url) {
-    const cleanedUrl = cleanUrl(url || '').trim();
-    const driveId = extractDriveId(cleanedUrl);
-    const isVid = isVideoLink(url);
-
-    if (isDriveLink(cleanedUrl) && driveId) {
-      return `<div class="card-image-wrap" style="min-height:480px;background:${isVid ? '#000' : '#f0eee9'};">
-        <iframe src="https://drive.google.com/file/d/${driveId}/preview"
-          width="100%" height="480" frameborder="0" allowfullscreen
-          style="display:block;border:none;background:${isVid ? '#000' : '#f0eee9'};${isVid ? '' : 'pointer-events:none;'}"></iframe>
-        <span class="card-num-badge" style="z-index:2;">${isVid ? 'Vídeo' : 'Post'}</span>
-      </div>`;
-    }
-
-    if (isVid) {
-      return `<div class="card-video-wrap" style="min-height:300px;">
-        <span class="card-num-badge" style="z-index:2;">Vídeo</span>
-        <video controls src="${cleanedUrl}" style="width:100%;max-height:520px;display:block;"></video>
-      </div>`;
-    }
-
-    return `<div class="card-image-wrap" style="min-height:200px;">
-      <img src="${cleanedUrl}" alt="Post" onerror="this.style.opacity=0" style="width:100%;max-height:520px;object-fit:contain;display:block;"/>
-      <span class="card-num-badge">Post</span>
-    </div>`;
-  }
-
-  function renderCarrossel(imagens) {
-    const slidesHtml = imagens
-      .map(url => url || '')
-      .filter(Boolean)
-      .map((url, si) => {
-        const cleanedUrl = cleanUrl(url).trim();
-        const driveId = extractDriveId(cleanedUrl);
-        const isVid = isVideoLink(url);
-        const label = `Arte ${si + 1} de ${imagens.length}`;
-
-        if (isDriveLink(cleanedUrl) && driveId) {
-          return `<div class="carousel-arte" style="background:${isVid ? '#000' : '#f0eee9'};">
-            <iframe src="https://drive.google.com/file/d/${driveId}/preview"
-              width="100%" height="520" frameborder="0" allowfullscreen
-              class="${isVid ? 'is-video' : ''}"
-              style="display:block;border:none;background:${isVid ? '#000' : '#f0eee9'};"></iframe>
-            <span class="carousel-arte-badge">${label}</span>
-          </div>`;
-        }
-
-        return `<div class="carousel-arte">
-          <img src="${cleanedUrl}" alt="${label}" style="width:100%;max-height:520px;object-fit:contain;display:block;"/>
-          <span class="carousel-arte-badge">${label}</span>
-        </div>`;
+      const html = comentarios.map(c => {
+        const statusTxt = c.status === 'aprovado' ? '✓ Aprovado' : '⚠ Pedir Ajustes';
+        const statusClass = c.status === 'aprovado' ? 'comment-status-approve' : 'comment-status-revise';
+        return `
+          <div class="comment-item">
+            <div class="comment-author">${c.nome_avaliador}</div>
+            <div class="comment-status ${statusClass}">${statusTxt}</div>
+            ${c.comentario ? `<div class="comment-text">${c.comentario}</div>` : ''}
+            <div class="comment-date">${new Date(c.criado_em).toLocaleString('pt-BR')}</div>
+          </div>
+        `;
       }).join('');
 
-    return `<div class="carousel-stack">
-      <div class="carousel-stack-header">Carrossel · ${imagens.length} artes</div>
-      ${slidesHtml}
-    </div>`;
+      const container = document.getElementById('comments-list');
+      if (comentarios.length) {
+        container.innerHTML = '<span class="section-label">Avaliações recebidas (' + comentarios.length + ')</span>' + html;
+      } else {
+        container.innerHTML = '';
+      }
+    } catch (e) {
+      console.error(e);
+    }
   }
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const postId = urlParams.get('post');
-  if (postId) carregarPost(postId);
+  // Init
+  carregarAprovacao();
 </script>
+
 </body>
 </html>
