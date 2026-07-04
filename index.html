@@ -32,7 +32,6 @@
     .screen { display: none; }
     .screen.active { display: block; }
 
-    /* ===== SETUP SCREEN ===== */
     #setup-screen.active {
       min-height: 100vh;
       display: flex;
@@ -100,8 +99,6 @@
       background: var(--bg);
       transition: border-color 0.2s;
       outline: none;
-      -webkit-appearance: none;
-      appearance: none;
     }
 
     input:focus, textarea:focus, select:focus {
@@ -139,12 +136,6 @@
       opacity: 0.85;
     }
 
-    .btn-primary:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    /* ===== TOPBAR ===== */
     .topbar {
       position: sticky;
       top: 0;
@@ -186,7 +177,6 @@
       letter-spacing: 0.04em;
     }
 
-    /* ===== APPROVAL SCREEN ===== */
     .container {
       max-width: 500px;
       margin: 0 auto;
@@ -206,9 +196,6 @@
       position: relative;
       background: #F0EEE9;
       aspect-ratio: 4 / 5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       overflow: hidden;
     }
 
@@ -218,6 +205,10 @@
       height: 100%;
       object-fit: cover;
       display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      border: none;
     }
 
     .nav-button {
@@ -312,15 +303,6 @@
       font-weight: 400;
     }
 
-    .descricao {
-      font-size: 0.85rem;
-      color: var(--ink-light);
-      line-height: 1.6;
-      margin-bottom: 16px;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
     .counter {
       font-size: 0.78rem;
       color: var(--ink-light);
@@ -333,7 +315,6 @@
       padding-top: 16px;
     }
 
-    /* ===== LINKS ===== */
     .links-section {
       margin-top: 20px;
       padding-top: 20px;
@@ -372,11 +353,6 @@
       background: var(--surface);
     }
 
-    .link-icon {
-      font-size: 0.9rem;
-      color: var(--ink-light);
-    }
-
     .link-item a {
       flex: 1;
       font-size: 0.85rem;
@@ -392,7 +368,6 @@
       text-decoration: underline;
     }
 
-    /* ===== APPROVAL FORM ===== */
     .approval-section {
       border-top: 1px solid var(--border);
       padding-top: 20px;
@@ -509,18 +484,6 @@
       opacity: 0.85;
     }
 
-    .btn-submit:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    /* ===== COMENTÁRIOS ===== */
-    .comments-list {
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border);
-    }
-
     .comment-item {
       margin-bottom: 16px;
       padding: 12px 14px;
@@ -561,11 +524,6 @@
       margin-top: 4px;
       font-style: italic;
     }
-
-    @media (max-width: 600px) {
-      .setup-card { padding: 32px 20px; }
-      .container { padding: 24px 16px; }
-    }
   </style>
 </head>
 <body>
@@ -574,7 +532,7 @@
 <div id="setup-screen" class="screen active">
   <div class="setup-card">
     <p class="brand">Papa PPG</p>
-    <h1>Aprovação<br>de Conteúdo</h1>
+    <h1>Aprovação de Conteúdo</h1>
     <p class="subtitle">Preencha os dados e gere o link de aprovação.</p>
 
     <div class="field-group">
@@ -640,7 +598,7 @@
   <div class="topbar">
     <div class="topbar-left">
       <span class="topbar-brand">Papa PPG</span>
-      <span class="topbar-title" id="topbar-title">Aprovação</span>
+      <span class="topbar-title">Aprovação</span>
       <span class="topbar-subtitle" id="topbar-subtitle">—</span>
     </div>
   </div>
@@ -684,7 +642,7 @@
           <button class="btn-submit" id="btn-submit" onclick="enviarAprovacao()">Enviar avaliação</button>
         </div>
 
-        <div id="comments-list" class="comments-list"></div>
+        <div id="comments-list"></div>
       </div>
     </div>
   </div>
@@ -701,60 +659,56 @@
   let currentImageIdx = 0;
   let statusSelecionado = null;
 
-  // Extrair ID do Google Drive de qualquer formato
-  function extrairIDDrive(url) {
+  // ===== FUNÇÕES DE CONVERSÃO (COPIADO DO ARQUIVO QUE FUNCIONA) =====
+  function getFileId(url) {
     if (!url) return null;
-    
-    // De /file/d/ID
-    const match1 = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
-    if (match1) return match1[1];
-    
-    // De uc?export=view&id=ID
-    const match2 = url.match(/id=([a-zA-Z0-9-_]+)/);
+    const match = url.match(/id=([^&]+)/);
+    if (match) return match[1];
+    const match2 = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
     if (match2) return match2[1];
-    
-    // De lh3.googleusercontent.com/d/ID
-    const match3 = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
-    if (match3) return match3[1];
-    
     return null;
   }
 
-  // Verificar se é vídeo
-  function ehVideo(url) {
-    return url && (url.includes('#video') || url.includes('video'));
+  function isVideo(url) {
+    return url && url.includes('#video');
+  }
+
+  function getThumbUrl(url) {
+    const id = getFileId(url);
+    if (!id) return url;
+    return `https://lh3.googleusercontent.com/d/${id}`;
+  }
+
+  function getEmbedUrl(url) {
+    const id = getFileId(url);
+    if (!id) return url;
+    return `https://drive.google.com/file/d/${id}/preview`;
   }
 
   // Criar elemento de mídia (imagem ou vídeo)
-  function criarElementoMidia(url) {
-    const id = extrairIDDrive(url);
-    if (!id) return null;
+  function createMediaElement(url) {
+    if (!url) return null;
 
-    if (ehVideo(url)) {
-      // Para vídeo, usa iframe
+    if (isVideo(url)) {
       const iframe = document.createElement('iframe');
-      iframe.src = `https://drive.google.com/file/d/${id}/preview`;
-      iframe.style.width = '100%';
-      iframe.style.height = '100%';
-      iframe.style.border = 'none';
+      iframe.src = getEmbedUrl(url);
+      iframe.style.cssText = 'width:100%;height:100%;border:none;position:absolute;top:0;left:0;';
       iframe.allow = 'autoplay';
+      iframe.allowFullscreen = true;
       return iframe;
     } else {
-      // Para imagem
       const img = document.createElement('img');
-      img.src = `https://lh3.googleusercontent.com/d/${id}`;
-      img.style.width = '100%';
-      img.style.height = '100%';
-      img.style.objectFit = 'cover';
+      img.src = getThumbUrl(url);
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;position:absolute;top:0;left:0;';
       img.alt = 'Conteúdo do carrossel';
-      img.onerror = function() {
-        // Fallback se lh3 não funcionar
-        this.src = `https://drive.google.com/thumbnail?id=${id}&sz=w1200`;
-      };
+      img.crossOrigin = 'anonymous';
+      img.referrerPolicy = 'no-referrer';
+      img.loading = 'lazy';
       return img;
     }
   }
 
+  // ===== SUPABASE =====
   async function sbPost(path, body) {
     const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
       method: 'POST',
@@ -779,23 +733,12 @@
     return r.json();
   }
 
-  async function sbPatch(path, body) {
-    await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
-      method: 'PATCH',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    });
-  }
-
   async function trelloPost(path, params) {
     const url = `https://api.trello.com/1/${path}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&` + new URLSearchParams(params).toString();
     return fetch(url, { method: 'POST' }).then(r => r.json());
   }
 
+  // ===== SETUP =====
   async function criarAprovacao() {
     const briefing = document.getElementById('briefing').value.trim();
     const semana = document.getElementById('semana').value;
@@ -843,6 +786,7 @@
     }
   }
 
+  // ===== APPROVAL =====
   async function carregarAprovacao() {
     const params = new URLSearchParams(window.location.search);
     const aprovacaoId = params.get('aprovacao');
@@ -885,7 +829,7 @@
           <div class="links-list">
             ${aprovacao.links_fotos.map(link => `
               <div class="link-item">
-                <span class="link-icon">🔗</span>
+                <span>🔗</span>
                 <a href="${link}" target="_blank">${link}</a>
               </div>
             `).join('')}
@@ -900,7 +844,7 @@
           <div class="links-list">
             ${aprovacao.links_ref.map(link => `
               <div class="link-item">
-                <span class="link-icon">📖</span>
+                <span>📖</span>
                 <a href="${link}" target="_blank">${link}</a>
               </div>
             `).join('')}
@@ -918,8 +862,8 @@
   }
 
   function renderIndicadores() {
-    const html = currentImages.map((_, i) => `
-      <button class="indicator ${i === 0 ? 'active' : ''}" onclick="goToImage(${i})"></button>
+    const html = currentImages.map((url, i) => `
+      <button class="indicator ${i === 0 ? 'active' : ''}" onclick="goToImage(${i})" style="${isVideo(url) ? 'background: rgba(255,200,50,0.4);' : ''}"></button>
     `).join('');
     document.getElementById('indicators').innerHTML = html;
   }
@@ -928,26 +872,25 @@
     const container = document.getElementById('carousel-container');
     const url = currentImages[currentImageIdx];
     
-    // Limpar container
-    const oldMedia = container.querySelector('img, iframe');
-    if (oldMedia) oldMedia.remove();
+    // Remover elemento de mídia antigo
+    const old = container.querySelector('img, iframe');
+    if (old) old.remove();
     
-    // Criar novo elemento de mídia (imagem ou vídeo)
-    const media = criarElementoMidia(url);
+    // Criar novo elemento
+    const media = createMediaElement(url);
     if (media) {
-      media.id = 'carousel-img';
-      media.style.position = 'absolute';
-      media.style.top = '0';
-      media.style.left = '0';
-      container.insertBefore(media, container.querySelector('.nav-button'));
+      container.insertBefore(media, container.firstChild);
     }
 
     // Atualizar indicadores
-    document.querySelectorAll('.indicator').forEach((el, i) => {
-      el.classList.toggle('active', i === currentImageIdx);
+    document.querySelectorAll('.indicator').forEach((ind, i) => {
+      ind.classList.toggle('active', i === currentImageIdx);
+      if (isVideo(currentImages[i])) {
+        ind.style.background = i === currentImageIdx ? 'rgba(255,200,50,0.9)' : 'rgba(255,200,50,0.4)';
+      }
     });
 
-    // Mostrar/esconder botões de navegação
+    // Mostrar/esconder botões
     const btnPrev = document.getElementById('btn-prev');
     const btnNext = document.getElementById('btn-next');
     btnPrev.style.display = currentImages.length > 1 ? 'flex' : 'none';
