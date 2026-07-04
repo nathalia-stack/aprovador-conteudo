@@ -676,7 +676,8 @@
   function getThumbUrl(url) {
     const id = getFileId(url);
     if (!id) return url;
-    return `https://lh3.googleusercontent.com/d/${id}`;
+    // Usa /view que às vezes funciona melhor
+    return `https://lh3.googleusercontent.com/d/${id}/view`;
   }
 
   function getEmbedUrl(url) {
